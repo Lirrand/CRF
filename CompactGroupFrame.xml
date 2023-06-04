@@ -1,0 +1,120 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="main.lua"/>
+    <Button name="CompactGroupFrame" movable="true" frameStrata="BACKGROUND" hidden="true">
+        <Size x="96" y="64"/>
+        <Anchors>
+            <Anchor point="LEFT" relativeTo="UIParent">
+                <Offset x="25" y="180" />
+            </Anchor>
+        </Anchors>
+        <Layers>
+            <Layer level="OVERLAY">
+                <Texture name="$parentTopLeftTexture" file="Interface\AddOns\CRF\assets\UnitFrame-TopLeft">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" />
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentTopRightTexture" file="Interface\AddOns\CRF\assets\UnitFrame-TopRight">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" />
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentTopMiddleTexture" file="Interface\AddOns\CRF\assets\UnitFrame-TopMiddle">
+                    <Size x="32" y="16" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTopLeftTexture" relativePoint="TOPRIGHT">
+                            <Offset x="0" y="1" />
+                        </Anchor>
+                        <Anchor point="TOPRIGHT" relativeTo="$parentTopRightTexture" relativePoint="TOPLEFT">
+                            <Offset x="0" y="1" />
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentBottomLeftTexture" file="Interface\AddOns\CRF\assets\UnitFrame-BottomLeft">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" />
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentBottomRightTexture" file="Interface\AddOns\CRF\assets\UnitFrame-BottomRight">
+                    <Size x="32" y="32" />
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" />
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentBottomMiddleTexture" file="Interface\AddOns\CRF\assets\UnitFrame-BottomMiddle">
+                    <Size x="32" y="16" />
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeftTexture" relativePoint="BOTTOMRIGHT">
+                            <Offset x="0" y="-4" />
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRightTexture" relativePoint="BOTTOMLEFT">
+                            <Offset x="0" y="-4" />
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentLeftTexture" file="Interface\AddOns\CRF\assets\UnitFrame-Left">
+                    <Size x="16" y="32" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTopLeftTexture">
+                            <Offset x="-1" y="-32" />
+                        </Anchor>
+                        <Anchor point="BOTTOMLEFT" relativeTo="$parentBottomLeftTexture">
+                            <Offset x="-1" y="32" />
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentRightTexture" file="Interface\AddOns\CRF\assets\UnitFrame-Right">
+                    <Size x="16" y="32" />
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativeTo="$parentTopRightTexture">
+                            <Offset x="2" y="-32" />
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parentBottomRightTexture">
+                            <Offset x="2" y="32" />
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                this:RegisterEvent('VARIABLES_LOADED')
+                this:RegisterEvent('PLAYER_ENTERING_WORLD')
+                this:RegisterEvent('PARTY_MEMBERS_CHANGED')
+                
+                this:RegisterForDrag('LeftButton')
+                this:SetClampedToScreen()
+                this:SetHitRectInsets(-5, -5, -5, -5)
+            </OnLoad>
+            <OnEvent>
+                if event == 'VARIABLES_LOADED' then
+                    if not CRF_Settings then
+                        CRF_Settings = {
+                            ['frame_scale'] = 0.7,
+                            ['frame_growth'] = false,
+                            ['show_player'] = false,
+                            ['unit_colors'] = true,
+                            ['unit_health'] = false,
+                            ['unit_power'] = true
+                        }
+                    end
+
+                    CRF_Init()
+                end
+                
+                CRF_UpdateFrames()
+            </OnEvent>
+            <OnDragStart>
+                if not UnitAffectingCombat('player') and IsControlKeyDown() then
+                    this:StartMoving()
+                end
+            </OnDragStart>
+            <OnDragStop>
+                this:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+    </Button>
+</Ui>

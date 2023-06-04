@@ -1,0 +1,11 @@
+## Interface: 11200
+## Title: Compact Raid Frames |cff808080by luskanek
+## Author: luskanek
+## Notes: TODO
+## Version: GIT
+## SavedVariablesPerCharacter: CRF_Settings
+
+main.lua
+
+CompactGroupFrame.xml
+CompactUnitFrame.xml
