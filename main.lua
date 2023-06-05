@@ -56,6 +56,8 @@ function CRF_Init()
 				indicator:SetPoint('BOTTOMRIGHT', unit, -6, 10)
 			end
 		end
+
+		group.ready = true
 	end
 end
 

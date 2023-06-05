@@ -135,12 +135,12 @@
                 end
             </OnDragStart>
             <OnSizeChanged>
-                CRF_UpdateFrames()
+                if this.ready then
+                    CRF_UpdateFrames()
+                end
             </OnSizeChanged>
             <OnDragStop>
                 this:StopMovingOrSizing()
-
-                CRF_UpdateFrames()
             </OnDragStop>
         </Scripts>
     </Button>
