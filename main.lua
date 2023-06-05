@@ -7,6 +7,26 @@ function CRF_Init()
 		local SHOW_PLAYER = CRF_Settings['show_player'] and 1 or 0
 		
 		group:SetScale(CRF_Settings['frame_scale'])
+
+		if not CRF_Settings['frame_border'] then
+			local textures = {
+				'TopLeftTexture',
+				'TopRightTexture',
+				'TopMiddleTexture',
+				'BottomLeftTexture',
+				'BottomRightTexture',
+				'BottomMiddleTexture',
+				'LeftTexture',
+				'RightTexture'
+			}
+
+			for _, v in pairs(textures) do
+				local texture = _G['CompactGroupFrame' .. v]
+				if texture then
+					texture:Hide()
+				end
+			end
+		end
 		
 		for i = 1, MAX_PARTY_MEMBERS do
 			local unit = _G['PartyMemberFrame' .. i]
@@ -16,15 +36,10 @@ function CRF_Init()
 		end
 		
 		for i = 1, MAX_PARTY_MEMBERS + SHOW_PLAYER do
-			local unit = CreateFrame('StatusBar', "CompactUnitFrame" .. i, group, "CompactUnitFrameTemplate")
+			local unit = CreateFrame('Frame', "CompactUnitFrame" .. i, group, "CompactUnitFrameTemplate")
 			unit:Hide()
 			unit:SetID(i - SHOW_PLAYER)
-			
-			if CRF_Settings['frame_growth'] then
-				unit:SetPoint('LEFT', group, ((i - 1) * unit:GetWidth() + 6), 0)
-			else
-				unit:SetPoint('TOP', group, 0, -((i - 1) * unit:GetHeight() + 6))
-			end
+			unit:SetPoint('TOP', group, 0, -((i - 1) * unit:GetHeight() + 6))
 			
 			if CRF_Settings['unit_health'] then
 				local health = _G[unit:GetName() .. 'HealthBarText']
@@ -33,7 +48,9 @@ function CRF_Init()
 			
 			if CRF_Settings['unit_power'] then
 				local healthbar = _G[unit:GetName() .. 'HealthBar']
-				healthbar:SetHeight(healthbar:GetHeight() - 10)
+				healthbar:ClearAllPoints()
+				healthbar:SetPoint('TOPLEFT', unit)
+				healthbar:SetPoint('BOTTOMRIGHT', unit, 0, 10)
 				
 				local indicator = _G[unit:GetName() .. 'DebuffIndicator']
 				indicator:SetPoint('BOTTOMRIGHT', unit, -6, 10)
@@ -50,12 +67,7 @@ function CRF_UpdateFrames()
 		
 		if GetNumPartyMembers() + SHOW_PLAYER > 0 then
 			group:Show()
-			
-			if CRF_Settings['frame_growth'] then
-				group:SetWidth((GetNumPartyMembers() + SHOW_PLAYER) * 82 + 14)
-			else
-				group:SetHeight((GetNumPartyMembers() + SHOW_PLAYER) * 50 + 14)
-			end
+			group:SetHeight((GetNumPartyMembers() + SHOW_PLAYER) * 50 + 14)
 		else
 			group:Hide()
 			return
@@ -63,6 +75,8 @@ function CRF_UpdateFrames()
 		
 		for i = 1, MAX_PARTY_MEMBERS + SHOW_PLAYER do
 			local unit = _G['CompactUnitFrame' .. i]
+			unit:SetWidth(group:GetWidth() - 14)
+			
 			local member = nil
 			
 			if SHOW_PLAYER == i then
@@ -100,7 +114,7 @@ function CRF_UpdateMemberFrame(frame)
 			healthbar:SetValue(1)
 			healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
 			
-			if CRF_Settings['unit_health'] then
+			if CRF_Settings['unit_health'] and health:IsVisible() then
 				health:SetText("Offline")
 				health:Show()
 			end
@@ -121,7 +135,7 @@ function CRF_UpdateMemberFrame(frame)
 				healthbar:SetStatusBarColor(color.r, color.g, color.b)
 			end
 			
-			if CRF_Settings['unit_health'] then
+			if CRF_Settings['unit_health'] and health:IsVisible() then
 				health:SetText(format('%.0f%%', (UnitHealth(member) / UnitHealthMax(member)) * 100))
 				health:Show()
 			end
@@ -166,7 +180,7 @@ SlashCmdList['CRF'] = function(msg)
 	
 	if not args[1] then
 		DEFAULT_CHAT_FRAME:AddMessage("/crf scale [number] - set group frame scale")
-		DEFAULT_CHAT_FRAME:AddMessage("/crf growth - toggle group frame growth (horizontal/vertical)")
+		DEFAULT_CHAT_FRAME:AddMessage("/crf border - toggle group border visibility")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf player - toggle player visibility in group frame")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf class - toggle healthbar color based on class")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf health - toggle health percentage text visibility")
@@ -180,12 +194,11 @@ SlashCmdList['CRF'] = function(msg)
 			
 			DEFAULT_CHAT_FRAME:AddMessage("Group frame scale set to " .. args[2] .. ".")
 		end
+
+	elseif args[1] == 'border' then
+		CRF_Settings['frame_border'] = not CRF_Settings['frame_border']
 		
-	elseif args[1] == 'growth' then
-		CRF_Settings['frame_growth'] = not CRF_Settings['frame_growth']
-		
-		DEFAULT_CHAT_FRAME:AddMessage("Group frame growth set to " ..
-		(CRF_Settings['frame_growth'] and "horizontal" or "vertical") .. ".")
+		DEFAULT_CHAT_FRAME:AddMessage("Group frame border set to " .. (CRF_Settings['frame_border'] and "visible" or "hidden") .. ".")
 		
 	elseif args[1] == 'player' then
 		CRF_Settings['show_player'] = not CRF_Settings['show_player']

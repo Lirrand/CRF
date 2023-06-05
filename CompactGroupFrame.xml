@@ -1,12 +1,22 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="main.lua"/>
-    <Button name="CompactGroupFrame" movable="true" frameStrata="BACKGROUND" hidden="true">
-        <Size x="96" y="64"/>
+    <Script file="main.lua" />
+    <Button name="CompactGroupFrame" movable="true" resizable="true" frameStrata="BACKGROUND" hidden="true">
+        <Size x="96" y="64" />
+        <ResizeBounds>
+            <minResize x="96" y="64" />
+            <maxResize x="180" y="64" />
+        </ResizeBounds>
         <Anchors>
             <Anchor point="LEFT" relativeTo="UIParent">
                 <Offset x="25" y="180" />
             </Anchor>
         </Anchors>
+        <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
+            <Color r="0" g="0" b="0" a="0" />
+            <BackgroundInsets>
+                <AbsInset left="-5" right="-5" top="-8" bottom="-5"/>
+            </BackgroundInsets>
+        </Backdrop>
         <Layers>
             <Layer level="OVERLAY">
                 <Texture name="$parentTopLeftTexture" file="Interface\AddOns\CRF\assets\UnitFrame-TopLeft">
@@ -87,14 +97,14 @@
                 
                 this:RegisterForDrag('LeftButton')
                 this:SetClampedToScreen()
-                this:SetHitRectInsets(-5, -5, -5, -5)
+                this:SetHitRectInsets(-8, -8, -10, -8)
             </OnLoad>
             <OnEvent>
                 if event == 'VARIABLES_LOADED' then
                     if not CRF_Settings then
                         CRF_Settings = {
                             ['frame_scale'] = 0.7,
-                            ['frame_growth'] = false,
+                            ['frame_border'] = true,
                             ['show_player'] = false,
                             ['unit_colors'] = true,
                             ['unit_health'] = false,
@@ -107,13 +117,30 @@
                 
                 CRF_UpdateFrames()
             </OnEvent>
+            <OnEnter>
+                if not UnitAffectingCombat('player') and IsControlKeyDown() then
+                    this:SetBackdropColor(0, 0, 0, 0.5)
+                end
+            </OnEnter>
+            <OnLeave>
+                this:SetBackdropColor(0, 0, 0, 0)
+            </OnLeave>
             <OnDragStart>
                 if not UnitAffectingCombat('player') and IsControlKeyDown() then
-                    this:StartMoving()
+                    if IsAltKeyDown() then
+                        this:StartSizing()
+                    else
+                        this:StartMoving()
+                    end
                 end
             </OnDragStart>
+            <OnSizeChanged>
+                CRF_UpdateFrames()
+            </OnSizeChanged>
             <OnDragStop>
                 this:StopMovingOrSizing()
+
+                CRF_UpdateFrames()
             </OnDragStop>
         </Scripts>
     </Button>

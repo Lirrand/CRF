@@ -30,9 +30,9 @@
                 </Scripts>
             </Button>
             <StatusBar name="$parentHealthBar">
-                <Size x="82" y="50" />
                 <Anchors>
-                    <Anchor point="TOP" relativeTo="$parent" />
+                    <Anchor point="TOPLEFT" relativeTo="$parent" />
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
                 </Anchors>
                 <Layers>
                     <Layer level="OVERLAY">
@@ -64,9 +64,10 @@
                 </Scripts>
             </StatusBar>
             <StatusBar name="$parentPowerBar" hidden="true">
-                <Size x="82" y="10" />
+                <Size x="0" y="10" />
                 <Anchors>
-                    <Anchor point="BOTTOM" relativeTo="$parent" />
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parent" />
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
                 </Anchors>
                 <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
                     <Color r="0.2" g="0.2" b="0.2" a="0.8" />
@@ -138,6 +139,9 @@
                     end
                 end
             </OnUpdate>
+            <OnSizeChanged>
+                getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 12)
+            </OnSizeChanged>
         </Scripts>
     </Frame>
 </Ui>
