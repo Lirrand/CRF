@@ -141,6 +141,8 @@
             </OnSizeChanged>
             <OnDragStop>
                 this:StopMovingOrSizing()
+
+                CRF_UpdateFrames()
             </OnDragStop>
         </Scripts>
     </Button>
