@@ -17,6 +17,13 @@
                 <AbsInset left="-5" right="-5" top="-8" bottom="-5"/>
             </BackgroundInsets>
         </Backdrop>
+        <Frames>
+            <Frame name="CompactUnitFrame1" inherits="CompactUnitFrameTemplate" />
+            <Frame name="CompactUnitFrame2" inherits="CompactUnitFrameTemplate" />
+            <Frame name="CompactUnitFrame3" inherits="CompactUnitFrameTemplate" />
+            <Frame name="CompactUnitFrame4" inherits="CompactUnitFrameTemplate" />
+            <Frame name="CompactUnitFrame5" inherits="CompactUnitFrameTemplate" />
+        </Frames>
         <Layers>
             <Layer level="OVERLAY">
                 <Texture name="$parentTopLeftTexture" file="Interface\AddOns\CRF\assets\UnitFrame-TopLeft">
@@ -114,7 +121,7 @@
 
                     CRF_Init()
                 end
-                
+
                 CRF_UpdateFrames()
             </OnEvent>
             <OnEnter>

@@ -1,5 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Script file="main.lua"/>
     <Frame name="CompactUnitFrameTemplate" virtual="true">
         <Size x="82" y="50"/>
         <Frames>
@@ -30,9 +29,11 @@
                 </Scripts>
             </Button>
             <StatusBar name="$parentHealthBar">
+                <Size x="82" y="50" />
+                <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
+                <BarColor r="0" g="1" b="0" />
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent" />
-                    <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
                 </Anchors>
                 <Layers>
                     <Layer level="OVERLAY">
@@ -57,24 +58,21 @@
                 </Backdrop>
                 <Scripts>
                     <OnLoad>
-                        this:SetStatusBarTexture("Interface\\AddOns\\CRF\\assets\\UnitFrame-HealthFill")
-                        this:SetStatusBarColor(0, 1, 0)
                         this:SetFrameLevel(0)
                     </OnLoad>
                 </Scripts>
             </StatusBar>
             <StatusBar name="$parentPowerBar" hidden="true">
-                <Size x="0" y="10" />
+                <Size x="82" y="10" />
+                <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="$parent" />
-                    <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
                 </Anchors>
                 <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
                     <Color r="0.2" g="0.2" b="0.2" a="0.8" />
                 </Backdrop>
                 <Scripts>
                     <OnLoad>
-                        this:SetStatusBarTexture("Interface\\AddOns\\CRF\\assets\\UnitFrame-HealthFill")
                         this:SetFrameLevel(0)
                     </OnLoad>
                 </Scripts>

@@ -2,7 +2,7 @@ local _G = getfenv(0)
 
 function CRF_Init()
 	local group = _G['CompactGroupFrame']
-	
+
 	if group then
 		local SHOW_PLAYER = CRF_Settings['show_player'] and 1 or 0
 		
@@ -29,31 +29,29 @@ function CRF_Init()
 		end
 		
 		for i = 1, MAX_PARTY_MEMBERS do
-			local unit = _G['PartyMemberFrame' .. i]
-			unit:Hide()
-			unit:UnregisterAllEvents()
-			unit.Show = function() return end
+			local frame = _G['PartyMemberFrame' .. i]
+			frame:Hide()
+			frame:UnregisterAllEvents()
+			frame.Show = function() return end
 		end
 		
 		for i = 1, MAX_PARTY_MEMBERS + SHOW_PLAYER do
-			local unit = CreateFrame('Frame', "CompactUnitFrame" .. i, group, "CompactUnitFrameTemplate")
-			unit:Hide()
-			unit:SetID(i - SHOW_PLAYER)
-			unit:SetPoint('TOP', group, 0, -((i - 1) * unit:GetHeight() + 6))
+			local frame = _G['CompactUnitFrame' .. i]
+			frame:Hide()
+			frame:SetID(i - SHOW_PLAYER)
+			frame:SetPoint('TOP', group, 0, -((i - 1) * frame:GetHeight() + 6))
 			
 			if CRF_Settings['unit_health'] then
-				local health = _G[unit:GetName() .. 'HealthBarText']
-				health:Show()
+				local health = _G[frame:GetName() .. 'HealthBarText']
+				frame:Show()
 			end
 			
 			if CRF_Settings['unit_power'] then
-				local healthbar = _G[unit:GetName() .. 'HealthBar']
-				healthbar:ClearAllPoints()
-				healthbar:SetPoint('TOPLEFT', unit)
-				healthbar:SetPoint('BOTTOMRIGHT', unit, 0, 10)
+				local healthbar = _G[frame:GetName() .. 'HealthBar']
+				healthbar:SetHeight(40)
 				
-				local indicator = _G[unit:GetName() .. 'DebuffIndicator']
-				indicator:SetPoint('BOTTOMRIGHT', unit, -6, 10)
+				local indicator = _G[frame:GetName() .. 'DebuffIndicator']
+				indicator:SetPoint('BOTTOMRIGHT', frame, -6, 10)
 			end
 		end
 
@@ -76,8 +74,8 @@ function CRF_UpdateFrames()
 		end
 		
 		for i = 1, MAX_PARTY_MEMBERS + SHOW_PLAYER do
-			local unit = _G['CompactUnitFrame' .. i]
-			unit:SetWidth(group:GetWidth() - 14)
+			local frame = _G['CompactUnitFrame' .. i]
+			frame:SetWidth(group:GetWidth() - 14)
 			
 			local member = nil
 			
@@ -87,15 +85,15 @@ function CRF_UpdateFrames()
 				if GetPartyMember(i - SHOW_PLAYER) then
 					member = 'party' .. i - SHOW_PLAYER
 				else
-					unit:Hide()
+					frame:Hide()
 				end
 			end
 			
 			if member then
-				unit:Show()
-				unit.unit = member
+				frame:Show()
+				frame.unit = member
 
-				CRF_UpdateMemberFrame(unit)
+				CRF_UpdateMemberFrame(frame)
 			end
 		end
 	end
