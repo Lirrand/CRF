@@ -4,8 +4,6 @@ function CRF_Init()
 	local group = _G['CompactGroupFrame']
 
 	if group then
-		local SHOW_PLAYER = CRF_Settings['show_player'] and 1 or 0
-		
 		group:SetScale(CRF_Settings['frame_scale'])
 
 		if not CRF_Settings['frame_border'] then
@@ -35,10 +33,10 @@ function CRF_Init()
 			frame.Show = function() return end
 		end
 		
-		for i = 1, MAX_PARTY_MEMBERS + SHOW_PLAYER do
+		for i = 1, MAX_PARTY_MEMBERS + 1 do
 			local frame = _G['CompactUnitFrame' .. i]
 			frame:Hide()
-			frame:SetID(i - SHOW_PLAYER)
+			frame:SetID(i - 1)
 			frame:SetPoint('TOP', group, 0, -((i - 1) * frame:GetHeight() + 6))
 			
 			if CRF_Settings['unit_health'] then
@@ -63,27 +61,25 @@ function CRF_UpdateFrames()
 	local group = _G['CompactGroupFrame']
 	
 	if group then		
-		local SHOW_PLAYER = CRF_Settings['show_player'] and 1 or 0
-		
-		if GetNumPartyMembers() + SHOW_PLAYER > 0 then
+		if GetNumPartyMembers() > 0 then
 			group:Show()
-			group:SetHeight((GetNumPartyMembers() + SHOW_PLAYER) * 50 + 14)
+			group:SetHeight((GetNumPartyMembers() + 1) * 50 + 14)
 		else
 			group:Hide()
 			return
 		end
 		
-		for i = 1, MAX_PARTY_MEMBERS + SHOW_PLAYER do
+		for i = 1, MAX_PARTY_MEMBERS + 1 do
 			local frame = _G['CompactUnitFrame' .. i]
 			frame:SetWidth(group:GetWidth() - 14)
 			
 			local member = nil
 			
-			if SHOW_PLAYER == i then
+			if i == 1 then
 				member = 'player'
 			else
-				if GetPartyMember(i - SHOW_PLAYER) then
-					member = 'party' .. i - SHOW_PLAYER
+				if GetPartyMember(i - 1) then
+					member = 'party' .. i - 1
 				else
 					frame:Hide()
 				end
@@ -181,7 +177,6 @@ SlashCmdList['CRF'] = function(msg)
 	if not args[1] then
 		DEFAULT_CHAT_FRAME:AddMessage("/crf scale [number] - set group frame scale")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf border - toggle group border visibility")
-		DEFAULT_CHAT_FRAME:AddMessage("/crf player - toggle player visibility in group frame")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf class - toggle healthbar color based on class")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf health - toggle health percentage text visibility")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf power - toggle unit powerbar visibility")
@@ -199,12 +194,6 @@ SlashCmdList['CRF'] = function(msg)
 		CRF_Settings['frame_border'] = not CRF_Settings['frame_border']
 		
 		DEFAULT_CHAT_FRAME:AddMessage("Group frame border set to " .. (CRF_Settings['frame_border'] and "visible" or "hidden") .. ".")
-		
-	elseif args[1] == 'player' then
-		CRF_Settings['show_player'] = not CRF_Settings['show_player']
-		
-		DEFAULT_CHAT_FRAME:AddMessage("Player visibility in group set to " ..
-		(CRF_Settings['show_player'] and "visible" or "hidden") .. ".")
 		
 	elseif args[1] == 'class' then
 		CRF_Settings['unit_colors'] = not CRF_Settings['unit_colors']

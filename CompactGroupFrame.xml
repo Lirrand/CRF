@@ -112,7 +112,6 @@
                         CRF_Settings = {
                             ['frame_scale'] = 0.7,
                             ['frame_border'] = true,
-                            ['show_player'] = false,
                             ['unit_colors'] = true,
                             ['unit_health'] = false,
                             ['unit_power'] = true
