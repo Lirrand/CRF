@@ -127,7 +127,7 @@ function CRF_UpdateMemberFrame(frame)
 			
 			if CRF_Settings['unit_colors'] then
 				local _, class = UnitClass(member)
-				local color = RAID_CLASS_COLORS[class]
+				local color = RAID_CLASS_COLORS[class] or { r = 0.0, g = 1.0, b = 0.0 }
 				healthbar:SetStatusBarColor(color.r, color.g, color.b)
 			end
 			
@@ -137,7 +137,7 @@ function CRF_UpdateMemberFrame(frame)
 			end
 			
 			if CRF_Settings['unit_power'] then
-				local color = ManaBarColor[UnitPowerType(member)]
+				local color = ManaBarColor[UnitPowerType(member)] or { r = 0.0, g = 0.0, b = 1.0 }
 				powerbar:SetStatusBarColor(color.r, color.g, color.b)
 				powerbar:SetBackdropColor(color.r - 0.6, color.g - 0.6, color.b - 0.6, 0.8)
 				powerbar:SetMinMaxValues(0, UnitManaMax(member))
