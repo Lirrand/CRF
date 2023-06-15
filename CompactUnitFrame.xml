@@ -116,6 +116,7 @@
                 this:RegisterEvent('UNIT_ENERGY')
                 this:RegisterEvent('UNIT_RAGE')
                 this:RegisterEvent('UNIT_AURA')
+                this:RegisterEvent('UNIT_DISPLAYPOWER')
             </OnLoad>
             <OnEvent>
                 local unit = arg1
