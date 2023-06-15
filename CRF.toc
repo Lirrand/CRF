@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: Compact Raid Frames |cff808080by luskanek
 ## Author: luskanek
-## Notes: TODO
+## Notes: Backport of Cataclysm raid frames.
 ## Version: GIT
 ## SavedVariablesPerCharacter: CRF_Settings
 
@@ -24,6 +24,10 @@ libs\ItemBonusLib-1.0\Locales\deDE.lua
 libs\ItemBonusLib-1.0\ItemBonusLib-1.0.lua
 
 libs\HealComm-1.0\HealComm-1.0.lua
+
+
+libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
+libs\LibRangeCheck-2.0\LibStub.lua
 
 CompactUnitFrame.xml
 CompactGroupFrame.xml
