@@ -136,7 +136,6 @@
                 if this.elapsed >= this.interval then
 		            this.elapsed = 0
 
-                    DEFAULT_CHAT_FRAME:AddMessage('e')
                     if this.unit then
                         local indicator = getglobal(this:GetName() .. 'CombatIndicator')
                         if UnitAffectingCombat(this.unit) then
