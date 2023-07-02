@@ -46,8 +46,7 @@ function CRF_Init()
 			
 			if CRF_Settings['unit_power'] then
 				local healthbar = _G[frame:GetName() .. 'HealthBar']
-				healthbar:SetPoint('TOPLEFT', frame)
-				healthbar:SetPoint('BOTTOMRIGHT', frame, 0, 10)
+				healthbar:SetHeight(40)
 				
 				local indicator = _G[frame:GetName() .. 'DebuffIndicator']
 				indicator:SetPoint('BOTTOMRIGHT', frame, -6, 10)
