@@ -144,6 +144,8 @@ function CRF_UpdateMemberFrame(frame)
 				powerbar:SetValue(UnitMana(member))
 				powerbar:Show()
 			end
+
+			CRF_OnHeal(member, nil)
 		end
 	end
 end

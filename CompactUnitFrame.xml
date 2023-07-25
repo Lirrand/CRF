@@ -61,6 +61,17 @@
                         this:SetFrameLevel(0)
                     </OnLoad>
                 </Scripts>
+                <Frames>
+                    <StatusBar name="$parentIncomingHealBar" hidden="true">
+                        <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
+                        <BarColor r="0" g="0.6" b="0" />
+                        <Scripts>
+                            <OnLoad>
+                                this:SetFrameLevel(0)
+                            </OnLoad>
+                        </Scripts>
+                    </StatusBar>
+                </Frames>
             </StatusBar>
             <StatusBar name="$parentPowerBar" hidden="true">
                 <Size x="82" y="10" />
