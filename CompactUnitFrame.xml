@@ -96,7 +96,7 @@
                     <FontHeight val="12" />
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset x="6" y="-4" />
+                            <Offset x="22" y="-4" />
                         </Anchor>
                     </Anchors>
                 </FontString>
@@ -111,8 +111,8 @@
                 <Texture name="$parentCombatIndicator" file="Interface\AddOns\CRF\assets\UnitFrame-CombatIndicator">
                     <Size x="16" y="16" />
                     <Anchors>
-                        <Anchor point="BOTTOMLEFT" relativeTo="$parent">
-                            <Offset x="6" y="12" />
+                        <Anchor point="TOPLEFT" relativeTo="$parent">
+                            <Offset x="6" y="-2" />
                         </Anchor>
                     </Anchors>
                 </Texture>
@@ -151,8 +151,12 @@
                         local indicator = getglobal(this:GetName() .. 'CombatIndicator')
                         if UnitAffectingCombat(this.unit) then
                             indicator:Show()
+                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 22, -4)
+                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 32)
                         else
                             indicator:Hide()
+                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 6, -4)
+                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 12)
                         end
 
                         if this.unit ~= 'player' and UnitIsConnected(this.unit) then
@@ -167,9 +171,6 @@
                     end
                 end
             </OnUpdate>
-            <OnSizeChanged>
-                getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 12)
-            </OnSizeChanged>
         </Scripts>
     </Frame>
 </Ui>
