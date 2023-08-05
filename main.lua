@@ -1,5 +1,63 @@
 local _G = getfenv(0)
 
+local classBuffs = {
+	druid = {
+		'Interface\\Icons\\Spell_Nature_Regeneration', 								-- Mark/Gift of the Wild
+		'Interface\\Icons\\Spell_Nature_Thorns',										-- Thorns
+		'Interface\\Icons\\Spell_Nature_Moonglow',									-- Moonkin Aura
+		'Interface\\Icons\\Spell_Mature_UnyeildingStamina',						-- Leader of the Pack
+	},
+	hunter = {
+		'Interface\\Icons\\Spell_Nature_ProtectionformNature',					-- Aspect of the Wild
+		'Interface\\Icons\\Ability_Trueshot',											-- Trueshot Aura
+		'Interface\\Icons\\Ability_Hunter_Pet_Wolf',									-- Furious Howl (Wolf pet)
+	},
+	mage = {
+		'Interface\\Icons\\Spell_Holy_MagicalSentry',								-- Arcane Intellect
+		'Interface\\Icons\\Spell_Holy_ArcaneIntellect',								-- Arcane Brilliance
+		'Interface\\Icons\\Spell_Nature_AbolishMagic',								-- Dampen Magic
+		'Interface\\Icons\\Spell_Holy_FlashHeal',										-- Amplify Magic
+	},
+	paladin = {
+		'Interface\\Icons\\Spell_Holy_FistOfJustice',								-- Blessing of Might
+		'Interface\\Icons\\Spell_Holy_SealOfWisdom',									-- Blessing of Wisdom
+		'Interface\\Icons\\Spell_Holy_SealOfSalvation',								-- Blessing of Salvation
+		'Interface\\Icons\\Spell_Holy_PrayerOfHealing02',							-- Blessing of Light
+		'Interface\\Icons\\Spell_Holy_SealOfValor',									-- Blessing of Freedom
+		'Interface\\Icons\\Spell_Holy_SealOfProtection',							-- Blessing of Protection
+		'Interface\\Icons\\Spell_Nature_LightningShield',							-- Blessing of Sanctuary
+		'Interface\\Icons\\Spell_Magic_MageArmor',									-- Blessing of Kings
+		'Interface\\Icons\\Spell_Holy_GreaterBlessingofKings',					-- Greater Blessing of Might
+		'Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom',					-- Greater Blessing of Wisdom
+		'Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation',				-- Greater Blessing of Salvation
+		'Interface\\Icons\\Spell_Holy_GreaterBlessingofLight',					-- Greater Blessing of Light
+		'Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary',				-- Greater Blessing of Sanctuary
+		'Interface\\Icons\\Spell_Magic_GreaterBlessingofKings',					-- Greater Blessing of Kings
+		'Interface\\Icons\\Spell_Holy_DevotionAura',									-- Devotion Aura
+		'Interface\\Icons\\Spell_Holy_AuraOfLight',									-- Retribution Aura
+		'Interface\\Icons\\Spell_Holy_MindSooth',										-- Concentration Aura
+		'Interface\\Icons\\Spell_Shadow_SealOfKings',								-- Shadow Resistance Aura
+		'Interface\\Icons\\Spell_Holy_MindVision',									-- Sanctity Aura
+		'Interface\\Icons\\Spell_Frost_WizardMark',									-- Frost Resistance Aura
+		'Interface\\Icons\\Spell_Fire_SealOfFire',									-- Fire Resistance Aura
+	},
+	priest = {
+		'Interface\\Icons\\Spell_Holy_WordFortitude',								-- Power Word: Fortitude
+		'Interface\\Icons\\Spell_Holy_DivineSpirit',									-- Divine Spirit
+		'Interface\\Icons\\Spell_Shadow_AntiShadow',									-- Shadow Protection
+		'Interface\\Icons\\Spell_Holy_Excorcism',										-- Fear Ward
+		'Interface\\Icons\\Spell_Holy_PrayerOfFortitude',							-- Prayer of Fortitude
+		'Interface\\Icons\\Spell_Holy_PrayerofSpirit',								-- Prayer of Spirit
+		'Interface\\Icons\\Spell_Holy_PrayerofShadowProtection',					-- Prayer of Shadow Protection
+	},
+	warlock = {
+		'Interface\\Icons\\Spell_Shadow_BloodBoil',									-- Blood Pact
+	},
+	warrior = {
+		'Interface\\Icons\\Ability_Warrior_BattleShout',							-- Battle Shout
+	}
+}
+
 function CRF_Init()
 	local group = _G['CompactGroupFrame']
 
@@ -25,29 +83,29 @@ function CRF_Init()
 				end
 			end
 		end
-		
+
 		for i = 1, MAX_PARTY_MEMBERS do
 			local frame = _G['PartyMemberFrame' .. i]
 			frame:Hide()
 			frame:UnregisterAllEvents()
 			frame.Show = function() return end
 		end
-		
+
 		for i = 1, MAX_PARTY_MEMBERS + 1 do
 			local frame = _G['CompactUnitFrame' .. i]
 			frame:Hide()
 			frame:SetID(i - 1)
 			frame:SetPoint('TOP', group, 0, -((i - 1) * frame:GetHeight() + 6))
-			
+
 			if CRF_Settings['unit_health'] then
 				local health = _G[frame:GetName() .. 'HealthBarText']
 				frame:Show()
 			end
-			
+
 			if CRF_Settings['unit_power'] then
 				local healthbar = _G[frame:GetName() .. 'HealthBar']
 				healthbar:SetHeight(40)
-				
+
 				local indicator = _G[frame:GetName() .. 'DebuffIndicator']
 				indicator:SetPoint('BOTTOMRIGHT', frame, -6, 10)
 			end
@@ -59,8 +117,8 @@ end
 
 function CRF_UpdateFrames()
 	local group = _G['CompactGroupFrame']
-	
-	if group then		
+
+	if group then
 		if GetNumPartyMembers() > 0 then
 			group:Show()
 			group:SetHeight((GetNumPartyMembers() + 1) * 50 + 14)
@@ -68,13 +126,13 @@ function CRF_UpdateFrames()
 			group:Hide()
 			return
 		end
-		
+
 		for i = 1, MAX_PARTY_MEMBERS + 1 do
 			local frame = _G['CompactUnitFrame' .. i]
 			frame:SetWidth(group:GetWidth() - 14)
-			
+
 			local member = nil
-			
+
 			if i == 1 then
 				member = 'player'
 			else
@@ -84,12 +142,13 @@ function CRF_UpdateFrames()
 					frame:Hide()
 				end
 			end
-			
+
 			if member then
 				frame:Show()
 				frame.unit = member
 
 				CRF_UpdateMemberFrame(frame)
+				CRF_UpdateMemberFrameBuffs(frame)
 			end
 		end
 	end
@@ -102,14 +161,14 @@ function CRF_UpdateMemberFrame(frame)
 		local healthbar = _G[frame:GetName() .. 'HealthBar']
 		local health = _G[frame:GetName() .. 'HealthBarText']
 		local powerbar = _G[frame:GetName() .. 'PowerBar']
-		
+
 		name:SetText(UnitName(member))
-				
+
 		if not UnitIsConnected(member) then
 			healthbar:SetMinMaxValues(0, 1)
 			healthbar:SetValue(1)
 			healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
-			
+
 			if CRF_Settings['unit_health'] and health:IsVisible() then
 				health:SetText("Offline")
 				health:Show()
@@ -124,18 +183,18 @@ function CRF_UpdateMemberFrame(frame)
 		else
 			healthbar:SetMinMaxValues(0, UnitHealthMax(member))
 			healthbar:SetValue(UnitHealth(member))
-			
+
 			if CRF_Settings['unit_colors'] then
 				local _, class = UnitClass(member)
 				local color = RAID_CLASS_COLORS[class] or { r = 0.0, g = 1.0, b = 0.0 }
 				healthbar:SetStatusBarColor(color.r, color.g, color.b)
 			end
-			
+
 			if CRF_Settings['unit_health'] and health:IsVisible() then
 				health:SetText(format('%.0f%%', (UnitHealth(member) / UnitHealthMax(member)) * 100))
 				health:Show()
 			end
-			
+
 			if CRF_Settings['unit_power'] then
 				local color = ManaBarColor[UnitPowerType(member)] or { r = 0.0, g = 0.0, b = 1.0 }
 				powerbar:SetStatusBarColor(color.r, color.g, color.b)
@@ -150,19 +209,60 @@ function CRF_UpdateMemberFrame(frame)
 	end
 end
 
-function CRF_UpdateMemberFrameIndicator(frame)
+function CRF_UpdateMemberFrameBuffs(frame)
+	if frame and frame.unit then
+		for i = 1, 4 do
+			local button = _G[frame:GetName() .. 'BuffButton' .. i]
+			button:Hide()
+			local texture = _G[button:GetName() .. 'Texture']
+			texture:SetTexture(nil)
+		end
+
+		local index = 1
+		while UnitBuff(frame.unit, index) do
+			local button = CRF_GetFreeBuffButton(frame)
+			if not button then return end
+
+			local buff = string.gsub(UnitBuff(frame.unit, index), '/', '\\')
+			local _, class = UnitClass('player')
+
+			for _, classBuff in ipairs(classBuffs[string.lower(class)]) do
+				if buff == classBuff then
+					local texture = _G[button:GetName() .. 'Texture']
+
+					button:Show()
+					button.index = index
+
+					texture:SetTexture(buff)
+				end
+			end
+
+			index = index + 1
+		end
+	end
+end
+
+function CRF_UpdateMemberFrameDebuffIndicator(frame)
 	if frame and frame.unit then
 		local indicator = _G[frame:GetName() .. 'DebuffIndicator']
-		if indicator:GetTexture() then
-			indicator:Hide()
-		end
-		
+		indicator:SetTexture(nil)
+
 		for i = 1, 40 do
 			local _, _, type = UnitDebuff(frame.unit, i)
 			if type then
 				indicator:Show()
 				indicator:SetTexture('Interface\\AddOns\\CRF\\assets\\UnitFrame-Debuff' .. type)
 			end
+		end
+	end
+end
+
+function CRF_GetFreeBuffButton(frame)
+	for i = 1, 4 do
+		local button = _G[frame:GetName() .. 'BuffButton' .. i]
+		local texture = _G[button:GetName() .. 'Texture']
+		if not texture:GetTexture() then
+			return button
 		end
 	end
 end
@@ -175,7 +275,7 @@ SlashCmdList['CRF'] = function(msg)
 		args[i] = arg
 		i = i + 1
 	end
-	
+
 	if not args[1] then
 		DEFAULT_CHAT_FRAME:AddMessage("/crf scale [number] - set group frame scale")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf border - toggle group border visibility")
@@ -184,34 +284,34 @@ SlashCmdList['CRF'] = function(msg)
 		DEFAULT_CHAT_FRAME:AddMessage("/crf power - toggle unit powerbar visibility")
 		DEFAULT_CHAT_FRAME:AddMessage("")
 		DEFAULT_CHAT_FRAME:AddMessage("Any changes will be applied after you reload your interface.")
-		
+
 	elseif args[1] == 'scale' then
 		if args[2] and type(tonumber(args[2])) == 'number' then
 			CRF_Settings['frame_scale'] = tonumber(args[2])
-			
+
 			DEFAULT_CHAT_FRAME:AddMessage("Group frame scale set to " .. args[2] .. ".")
 		end
 
 	elseif args[1] == 'border' then
 		CRF_Settings['frame_border'] = not CRF_Settings['frame_border']
-		
+
 		DEFAULT_CHAT_FRAME:AddMessage("Group frame border set to " .. (CRF_Settings['frame_border'] and "visible" or "hidden") .. ".")
-		
+
 	elseif args[1] == 'class' then
 		CRF_Settings['unit_colors'] = not CRF_Settings['unit_colors']
-		
+
 		DEFAULT_CHAT_FRAME:AddMessage("Unit healthbar class colors set to " ..
 		(CRF_Settings['unit_colors'] and "enabled" or "disabled") .. ".")
-		
+
 	elseif args[1] == 'health' then
 		CRF_Settings['unit_health'] = not CRF_Settings['unit_health']
-		
+
 		DEFAULT_CHAT_FRAME:AddMessage("Unit health percentage text set to " ..
 		(CRF_Settings['unit_health'] and "enabled" or "disabled") .. ".")
-		
+
 	elseif args[1] == 'power' then
 		CRF_Settings['unit_power'] = not CRF_Settings['unit_power']
-		
+
 		DEFAULT_CHAT_FRAME:AddMessage(
 		"Unit powerbar set to " .. (CRF_Settings['unit_power'] and "visible" or "hidden") .. ".")
 	end
