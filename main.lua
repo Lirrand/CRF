@@ -108,6 +108,9 @@ function CRF_Init()
 
 				local indicator = _G[frame:GetName() .. 'DebuffIndicator']
 				indicator:SetPoint('BOTTOMRIGHT', frame, -6, 10)
+
+				local buff = _G[frame:GetName() .. 'BuffButton1']
+				buff:SetPoint('BOTTOMLEFT', healthbar, 2, 0)
 			end
 		end
 
