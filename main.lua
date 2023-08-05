@@ -106,10 +106,7 @@ function CRF_Init()
 				local healthbar = _G[frame:GetName() .. 'HealthBar']
 				healthbar:SetHeight(40)
 
-				local indicator = _G[frame:GetName() .. 'DebuffIndicator']
-				indicator:SetPoint('BOTTOMRIGHT', frame, -6, 10)
-
-				local buff = _G[frame:GetName() .. 'BuffButton1']
+				local buff = _G[frame:GetName() .. 'AuraButton1']
 				buff:SetPoint('BOTTOMLEFT', healthbar, 2, 0)
 			end
 		end
@@ -151,7 +148,7 @@ function CRF_UpdateFrames()
 				frame.unit = member
 
 				CRF_UpdateMemberFrame(frame)
-				CRF_UpdateMemberFrameBuffs(frame)
+				CRF_UpdateMemberFrameAuras(frame)
 			end
 		end
 	end
@@ -212,18 +209,52 @@ function CRF_UpdateMemberFrame(frame)
 	end
 end
 
-function CRF_UpdateMemberFrameBuffs(frame)
+function CRF_UpdateMemberFrameAuras(frame)
 	if frame and frame.unit then
 		for i = 1, 4 do
-			local button = _G[frame:GetName() .. 'BuffButton' .. i]
+			local button = _G[frame:GetName() .. 'AuraButton' .. i]
 			button:Hide()
+			button.type = nil
+			button.index = nil
+
 			local texture = _G[button:GetName() .. 'Texture']
 			texture:SetTexture(nil)
 		end
 
 		local index = 1
+		while UnitDebuff(frame.unit, index) do
+			local debuff, _, type = UnitDebuff(frame.unit, index)
+			if type then
+				local button = CRF_GetFreeAuraButton(frame, true)
+				if not button then return end
+
+				local texture = _G[button:GetName() .. 'Texture']
+				debuff = string.gsub(debuff, '/', '\\')
+
+				button:Show()
+				if type == 'Curse' then
+					button:SetBackdropColor(0.6, 0.0, 1.0, 1.0)
+				elseif type == 'Disease' then
+					button:SetBackdropColor(0.6, 0.4, 0.0, 1.0)
+				elseif type == 'Magic' then
+					button:SetBackdropColor(0.2, 0.6, 1.0, 1.0)
+				elseif type == 'Poison' then
+					button:SetBackdropColor(0.0, 0.6, 0.0, 1.0)
+				else
+					button:SetBackdropColor(0.8, 0.0, 0.0, 1.0)
+				end
+				button.type = 'debuff'
+				button.index = index
+
+				texture:SetTexture(debuff)
+			end
+
+			index = index + 1
+		end
+
+		index = 1
 		while UnitBuff(frame.unit, index) do
-			local button = CRF_GetFreeBuffButton(frame)
+			local button = CRF_GetFreeAuraButton(frame, false)
 			if not button then return end
 
 			local buff = string.gsub(UnitBuff(frame.unit, index), '/', '\\')
@@ -234,6 +265,8 @@ function CRF_UpdateMemberFrameBuffs(frame)
 					local texture = _G[button:GetName() .. 'Texture']
 
 					button:Show()
+					button:SetBackdropColor(0.0, 0.0, 0.0, 1.0)
+					button.type = 'buff'
 					button.index = index
 
 					texture:SetTexture(buff)
@@ -245,27 +278,22 @@ function CRF_UpdateMemberFrameBuffs(frame)
 	end
 end
 
-function CRF_UpdateMemberFrameDebuffIndicator(frame)
-	if frame and frame.unit then
-		local indicator = _G[frame:GetName() .. 'DebuffIndicator']
-		indicator:SetTexture(nil)
-
-		for i = 1, 40 do
-			local _, _, type = UnitDebuff(frame.unit, i)
-			if type then
-				indicator:Show()
-				indicator:SetTexture('Interface\\AddOns\\CRF\\assets\\UnitFrame-Debuff' .. type)
+function CRF_GetFreeAuraButton(frame, reverse)
+	if reverse then
+		for i = 4, 1, -1 do
+			local button = _G[frame:GetName() .. 'AuraButton' .. i]
+			local texture = _G[button:GetName() .. 'Texture']
+			if not texture:GetTexture() or (texture:GetTexture() and button.type == 'buff') then
+				return button
 			end
 		end
-	end
-end
-
-function CRF_GetFreeBuffButton(frame)
-	for i = 1, 4 do
-		local button = _G[frame:GetName() .. 'BuffButton' .. i]
-		local texture = _G[button:GetName() .. 'Texture']
-		if not texture:GetTexture() then
-			return button
+	else
+		for i = 1, 4 do
+			local button = _G[frame:GetName() .. 'AuraButton' .. i]
+			local texture = _G[button:GetName() .. 'Texture']
+			if not texture:GetTexture() then
+				return button
+			end
 		end
 	end
 end
