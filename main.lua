@@ -62,26 +62,8 @@ function CRF_Init()
 	local group = _G['CompactGroupFrame']
 
 	if group then
-		group:SetScale(CRF_Settings['frame_scale'])
-
 		if not CRF_Settings['frame_border'] then
-			local textures = {
-				'TopLeftTexture',
-				'TopRightTexture',
-				'TopMiddleTexture',
-				'BottomLeftTexture',
-				'BottomRightTexture',
-				'BottomMiddleTexture',
-				'LeftTexture',
-				'RightTexture'
-			}
-
-			for _, v in pairs(textures) do
-				local texture = _G['CompactGroupFrame' .. v]
-				if texture then
-					texture:Hide()
-				end
-			end
+			group:SetBackdrop(nil)
 		end
 
 		for i = 1, MAX_PARTY_MEMBERS do
@@ -95,7 +77,7 @@ function CRF_Init()
 			local frame = _G['CompactUnitFrame' .. i]
 			frame:Hide()
 			frame:SetID(i - 1)
-			frame:SetPoint('TOP', group, 0, -((i - 1) * frame:GetHeight() + 6))
+			frame:SetPoint('TOP', group, 0, -((i - 1) * frame:GetHeight() + 4))
 
 			if CRF_Settings['unit_health'] then
 				local health = _G[frame:GetName() .. 'HealthBarText']
@@ -104,10 +86,7 @@ function CRF_Init()
 
 			if CRF_Settings['unit_power'] then
 				local healthbar = _G[frame:GetName() .. 'HealthBar']
-				healthbar:SetHeight(40)
-
-				local buff = _G[frame:GetName() .. 'AuraButton1']
-				buff:SetPoint('BOTTOMLEFT', healthbar, 2, 0)
+				healthbar:SetHeight(38)
 			end
 		end
 
@@ -121,7 +100,7 @@ function CRF_UpdateFrames()
 	if group then
 		if GetNumPartyMembers() > 0 then
 			group:Show()
-			group:SetHeight((GetNumPartyMembers() + 1) * 50 + 14)
+			group:SetHeight((GetNumPartyMembers() + 1) * 42 + 8)
 		else
 			group:Hide()
 			return
@@ -129,8 +108,6 @@ function CRF_UpdateFrames()
 
 		for i = 1, MAX_PARTY_MEMBERS + 1 do
 			local frame = _G['CompactUnitFrame' .. i]
-			frame:SetWidth(group:GetWidth() - 14)
-
 			local member = nil
 
 			if i == 1 then
@@ -308,20 +285,12 @@ SlashCmdList['CRF'] = function(msg)
 	end
 
 	if not args[1] then
-		DEFAULT_CHAT_FRAME:AddMessage("/crf scale [number] - set group frame scale")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf border - toggle group border visibility")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf class - toggle healthbar color based on class")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf health - toggle health percentage text visibility")
 		DEFAULT_CHAT_FRAME:AddMessage("/crf power - toggle unit powerbar visibility")
 		DEFAULT_CHAT_FRAME:AddMessage("")
 		DEFAULT_CHAT_FRAME:AddMessage("Any changes will be applied after you reload your interface.")
-
-	elseif args[1] == 'scale' then
-		if args[2] and type(tonumber(args[2])) == 'number' then
-			CRF_Settings['frame_scale'] = tonumber(args[2])
-
-			DEFAULT_CHAT_FRAME:AddMessage("Group frame scale set to " .. args[2] .. ".")
-		end
 
 	elseif args[1] == 'border' then
 		CRF_Settings['frame_border'] = not CRF_Settings['frame_border']

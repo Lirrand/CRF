@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-    <Button name="CompactUnitFrameAuraButtonTemplate" frameLevel="3" virtual="true">
-        <Size x="14" y="14" />
+    <Button name="CompactUnitFrameAuraButtonTemplate" frameLevel="4" virtual="true">
+        <Size x="16" y="16" />
         <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
             <Color r="0" g="0" b="0" a="1" />
         </Backdrop>
@@ -35,7 +35,7 @@
         </Scripts>
     </Button>
     <Frame name="CompactUnitFrameTemplate" virtual="true">
-        <Size x="82" y="50"/>
+        <Size x="64" y="42"/>
         <Frames>
             <Button name="$parentHitbox">
                 <Anchors>
@@ -64,7 +64,7 @@
                 </Scripts>
             </Button>
             <StatusBar name="$parentHealthBar">
-                <Size x="82" y="50" />
+                <Size x="64" y="42" />
                 <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
                 <BarColor r="0" g="1" b="0" />
                 <Anchors>
@@ -109,7 +109,7 @@
                 </Frames>
             </StatusBar>
             <StatusBar name="$parentPowerBar" hidden="true">
-                <Size x="82" y="10" />
+                <Size x="64" y="4" />
                 <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="$parent" />
@@ -125,29 +125,27 @@
             </StatusBar>
             <Button name="$parentAuraButton1" inherits="CompactUnitFrameAuraButtonTemplate">
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentHealthBar">
-                        <Offset x="2" y="1" />
-                    </Anchor>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentHealthBar" />
                 </Anchors>
             </Button>
             <Button name="$parentAuraButton2" inherits="CompactUnitFrameAuraButtonTemplate">
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="$parentAuraButton1">
-                        <Offset x="14" y="0" />
+                        <Offset x="16" y="0" />
                     </Anchor>
                 </Anchors>
             </Button>
             <Button name="$parentAuraButton3" inherits="CompactUnitFrameAuraButtonTemplate">
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="$parentAuraButton2">
-                        <Offset x="14" y="0" />
+                        <Offset x="16" y="0" />
                     </Anchor>
                 </Anchors>
             </Button>
             <Button name="$parentAuraButton4" inherits="CompactUnitFrameAuraButtonTemplate">
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="$parentAuraButton3">
-                        <Offset x="14" y="0" />
+                        <Offset x="16" y="0" />
                     </Anchor>
                 </Anchors>
             </Button>
@@ -155,19 +153,17 @@
         <Layers>
             <Layer level="OVERLAY">
                 <FontString name="$parentNameText" font="Fonts\FRIZQT__.TTF" justifyH="LEFT">
-                    <Size x="70" y="12" />
-                    <FontHeight val="12" />
+                    <Size x="60" y="10" />
+                    <FontHeight val="10" />
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset x="22" y="-4" />
-                        </Anchor>
+                        <Anchor point="TOPLEFT" relativeTo="$parent" />
                     </Anchors>
                 </FontString>
                 <Texture name="$parentCombatIndicator" file="Interface\AddOns\CRF\assets\UnitFrame-CombatIndicator">
-                    <Size x="16" y="16" />
+                    <Size x="10" y="10" />
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset x="6" y="-2" />
+                            <Offset x="3" y="-3" />
                         </Anchor>
                     </Anchors>
                 </Texture>
@@ -206,12 +202,12 @@
                         local indicator = getglobal(this:GetName() .. 'CombatIndicator')
                         if UnitAffectingCombat(this.unit) then
                             indicator:Show()
-                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 22, -4)
-                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 32)
+                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 14, -3)
+                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 14)
                         else
                             indicator:Hide()
-                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 6, -4)
-                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 12)
+                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 3, -3)
+                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 6)
                         end
 
                         if this.unit ~= 'player' and UnitIsConnected(this.unit) then
