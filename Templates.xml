@@ -1,6 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Button name="CompactUnitFrameAuraButtonTemplate" frameLevel="4" virtual="true">
-        <Size x="16" y="16" />
         <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
             <Color r="0.0" g="0.0" b="0.0" a="1.0" />
         </Backdrop>
@@ -127,55 +126,13 @@
                     <Anchor point="BOTTOMLEFT" relativeTo="$parentHealthBar" />
                 </Anchors>
             </Button>
-            <Button name="$parentAuraButton2" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton1">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
-            <Button name="$parentAuraButton3" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton2">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
-            <Button name="$parentAuraButton4" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton3">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
-            <Button name="$parentAuraButton5" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton4">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
-            <Button name="$parentAuraButton6" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton5">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
-            <Button name="$parentAuraButton7" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton6">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
-            <Button name="$parentAuraButton8" inherits="CompactUnitFrameAuraButtonTemplate">
-                <Anchors>
-                    <Anchor point="LEFT" relativeTo="$parentAuraButton7">
-                        <Offset x="16" y="0" />
-                    </Anchor>
-                </Anchors>
-            </Button>
+            <Button name="$parentAuraButton2" inherits="CompactUnitFrameAuraButtonTemplate" />
+            <Button name="$parentAuraButton3" inherits="CompactUnitFrameAuraButtonTemplate" />
+            <Button name="$parentAuraButton4" inherits="CompactUnitFrameAuraButtonTemplate" />
+            <Button name="$parentAuraButton5" inherits="CompactUnitFrameAuraButtonTemplate" />
+            <Button name="$parentAuraButton6" inherits="CompactUnitFrameAuraButtonTemplate" />
+            <Button name="$parentAuraButton7" inherits="CompactUnitFrameAuraButtonTemplate" />
+            <Button name="$parentAuraButton8" inherits="CompactUnitFrameAuraButtonTemplate" />
         </Frames>
         <Layers>
             <Layer level="OVERLAY">

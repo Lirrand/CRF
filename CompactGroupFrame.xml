@@ -31,7 +31,8 @@
                             ['unit_power'] = true,
                             ['unit_colors'] = true,
                             ['unit_width'] = 64,
-                            ['unit_height'] = 42
+                            ['unit_height'] = 42,
+                            ['aura_size'] = 16
                         }
                     end
 

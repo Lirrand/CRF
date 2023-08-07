@@ -209,7 +209,7 @@ function CRF_UpdateMemberFrameAuras(frame)
 end
 
 function CRF_GetFreeAuraButton(frame, reverse)
-	local max = floor(CRF_Settings['unit_width'] / 16)
+	local max = floor(CRF_Settings['unit_width'] / CRF_Settings['aura_size'])
 
 	if reverse then
 		for i = max, 1, -1 do
@@ -275,5 +275,18 @@ function CRF_UpdateLookAndFeel()
 		else
 			healthbar:SetStatusBarColor(0.0, 1.0, 0.0)
 		end
+
+		local size = CRF_Settings['aura_size']
+		for i = 1, 8 do
+			local button = _G[frame:GetName() .. 'AuraButton' .. i]
+			button:SetHeight(size)
+			button:SetWidth(size)
+
+			if i ~= 1 then
+				button:SetPoint('LEFT', _G[frame:GetName() .. 'AuraButton' .. i - 1], size, 0)
+			end
+		end
+
+		CRF_UpdateMemberFrameAuras(frame)
 	end
 end

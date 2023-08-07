@@ -38,7 +38,20 @@ SlashCmdList['CRF'] = function(msg)
 		CRF_Settings['unit_colors'] = not CRF_Settings['unit_colors']
 
 		chat:AddMessage("Unit healthbar class colors set to " .. (CRF_Settings['unit_colors'] and "enabled" or "disabled") .. ".")
-   elseif args[1] == 'size' then
+   elseif args[1] == 'aura'then
+		if args[2] == 'size' then
+			if args[3] and type(tonumber(args[3])) == 'number' then
+				local size = tonumber(args[3])
+				if size < (CRF_Settings['unit_height'] - 4) then
+					CRF_Settings['aura_size'] = size
+
+					chat:AddMessage("Unitframe aura size set to " .. size .. ".")
+				else
+					chat:AddMessage("Unitframe aura size exceeds unitframe height.")
+				end
+			end
+		end
+	elseif args[1] == 'size' then
       if (args[2] and type(tonumber(args[2])) == 'number') and (args[3] and type(tonumber(args[3])) == 'number') then
          local width = tonumber(args[2])
          local height = tonumber(args[3])
@@ -54,6 +67,7 @@ SlashCmdList['CRF'] = function(msg)
 		chat:AddMessage("/crf border - toggle group frame border visibility")
 		chat:AddMessage("/crf power - toggle unit powerbar visibility")
 		chat:AddMessage("/crf class - toggle class-colored healthbars")
+		chat:AddMessage("/crf aura size [number] - set unitframe auras size")
 		chat:AddMessage("/crf size [width] [height] - set unitframe width and height")
 	end
 
