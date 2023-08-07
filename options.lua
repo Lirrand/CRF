@@ -29,15 +29,15 @@ SlashCmdList['CRF'] = function(msg)
 	if args[1] == 'border' then
 		CRF_Settings['frame_border'] = not CRF_Settings['frame_border']
 
-		chat:AddMessage("Group frame border set to " .. (CRF_Settings['frame_border'] and "visible" or "hidden") .. ".")
+		chat:AddMessage("|cffcececeGroup frame border set to " .. (CRF_Settings['frame_border'] and "|cffffffffvisible" or "|cffffffffhidden") .. "|cffcecece.")
 	elseif args[1] == 'power' then
 		CRF_Settings['unit_power'] = not CRF_Settings['unit_power']
 
-		chat:AddMessage("Unit powerbar set to " .. (CRF_Settings['unit_power'] and "visible" or "hidden") .. ".")
+		chat:AddMessage("|cffcececeUnitframe powerbars set to " .. (CRF_Settings['unit_power'] and "|cffffffffvisible" or "|cffffffffhidden") .. "|cffcecece.")
 	elseif args[1] == 'class' then
 		CRF_Settings['unit_colors'] = not CRF_Settings['unit_colors']
 
-		chat:AddMessage("Unit healthbar class colors set to " .. (CRF_Settings['unit_colors'] and "enabled" or "disabled") .. ".")
+		chat:AddMessage("|cffcececeUnitframe class-colored healthbars " .. (CRF_Settings['unit_colors'] and "|cffffffffenabled" or "|cffffffffdisabled") .. "|cffcecece.")
    elseif args[1] == 'aura'then
 		if args[2] == 'size' then
 			if args[3] and type(tonumber(args[3])) == 'number' then
@@ -45,9 +45,9 @@ SlashCmdList['CRF'] = function(msg)
 				if size < (CRF_Settings['unit_height'] - 4) then
 					CRF_Settings['aura_size'] = size
 
-					chat:AddMessage("Unitframe aura size set to " .. size .. ".")
+					chat:AddMessage("|cffcececeUnitframe aura size set to |cffffffff" .. size .. "|cffcecece.")
 				else
-					chat:AddMessage("Unitframe aura size exceeds unitframe height.")
+					chat:AddMessage("|cffcececeSpecified aura size exceeds unitframe height.")
 				end
 			end
 		end
@@ -55,20 +55,30 @@ SlashCmdList['CRF'] = function(msg)
       if (args[2] and type(tonumber(args[2])) == 'number') and (args[3] and type(tonumber(args[3])) == 'number') then
          local width = tonumber(args[2])
          local height = tonumber(args[3])
-         if (width >= 64 and width <= 128) and (height >= 42 and height <= 64) then
-            CRF_Settings['unit_width'] = tonumber(width)
-            CRF_Settings['unit_height'] = tonumber(height)
+         if width >= 64 and width <= 128 then
+				if height >= 36 and height <= 64 then
+					CRF_Settings['unit_width'] = tonumber(width)
+					CRF_Settings['unit_height'] = tonumber(height)
 
-            chat:AddMessage("Unitframe width and height set to " .. width .. " and " .. height .. ".")
-         end
+					chat:AddMessage("|cffcececeUnitframe width and height set to |cffffffff" .. width .. " |cffcececeand |cffffffff" .. height .. "|cffcecece.")
+				else
+					chat:AddMessage("|cffcececeSpecified height is too small (min. 36px) or too large (max. 64px).")
+				end
+			else
+				chat:AddMessage("|cffcececeSpecified width is too small (min. 64px) or too large (max. 128px).")
+			end
       end
 	else
 		chat:Clear()
-		chat:AddMessage("/crf border - toggle group frame border visibility")
-		chat:AddMessage("/crf power - toggle unit powerbar visibility")
-		chat:AddMessage("/crf class - toggle class-colored healthbars")
-		chat:AddMessage("/crf aura size [number] - set unitframe auras size")
-		chat:AddMessage("/crf size [width] [height] - set unitframe width and height")
+
+		chat:AddMessage("Compact Raid Frames")
+		chat:AddMessage("")
+		chat:AddMessage("|cff808080/crf |cffffffffborder |cffcecece- toggle group frame border visibility")
+		chat:AddMessage("|cff808080/crf |cffffffffpower |cffcecece- toggle unit powerbar visibility")
+		chat:AddMessage("|cff808080/crf |cffffffffclass |cffcecece- toggle class-colored healthbars")
+		chat:AddMessage("|cff808080/crf |cffffffffaura size [number] |cffcecece- set unitframe auras size")
+		chat:AddMessage("|cff808080/crf |cffffffffsize [width] [height] |cffcecece- set unitframe width and height")
+		chat:AddMessage("")
 	end
 
 	CRF_UpdateLookAndFeel()
