@@ -58,29 +58,6 @@ local classBuffs = {
 	}
 }
 
-function CRF_Init()
-	local group = _G['CompactGroupFrame']
-
-	if group then
-		for i = 1, MAX_PARTY_MEMBERS do
-			local frame = _G['PartyMemberFrame' .. i]
-			frame:Hide()
-			frame:UnregisterAllEvents()
-			frame.Show = function() return end
-		end
-
-		for i = 1, MAX_PARTY_MEMBERS + 1 do
-			local frame = _G['CompactUnitFrame' .. i]
-			frame:Hide()
-			frame:SetID(i - 1)
-		end
-
-		CRF_UpdateLookAndFeel()
-
-		group.ready = true
-	end
-end
-
 function CRF_UpdateFrames()
 	local group = _G['CompactGroupFrame']
 
@@ -110,59 +87,12 @@ function CRF_UpdateFrames()
 
 			if member then
 				frame:Show()
+				frame:SetID(i - 1)
 				frame.unit = member
 
 				CRF_UpdateMemberFrame(frame)
 				CRF_UpdateMemberFrameAuras(frame)
 			end
-		end
-	end
-end
-
-function CRF_UpdateLookAndFeel()
-	local group = _G['CompactGroupFrame']
-
-	if CRF_Settings['frame_border'] then
-		group:SetBackdrop({
-			edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
-			edgeSize = 16
-		})
-		group:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-	else
-		group:SetBackdrop(nil)
-	end
-
-	for i = 1, MAX_PARTY_MEMBERS + 1 do
-		local frame = _G['CompactUnitFrame' .. i]
-		local healthbar = _G[frame:GetName() .. 'HealthBar']
-		local powerbar = _G[frame:GetName() .. 'PowerBar']
-
-		local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
-
-		group:SetHeight((GetNumPartyMembers() + 1) * height + 8)
-		group:SetWidth(width + 8)
-
-		frame:SetPoint('TOP', group, 0, -((i - 1) * height + 4))
-		frame:SetHeight(height)
-		frame:SetWidth(width)
-
-		healthbar:SetWidth(width)
-
-		if CRF_Settings['unit_power'] then
-			healthbar:SetHeight(height - 4)
-
-			powerbar:Show()
-			powerbar:SetWidth(width)
-		else
-			healthbar:SetHeight(height)
-
-			powerbar:Hide()
-		end
-
-		if CRF_Settings['unit_colors'] then
-			CRF_UpdateMemberFrame(frame)
-		else
-			healthbar:SetStatusBarColor(0.0, 1.0, 0.0)
 		end
 	end
 end
@@ -176,17 +106,7 @@ function CRF_UpdateMemberFrame(frame)
 
 		name:SetText(UnitName(member))
 
-		if not UnitIsConnected(member) then
-			healthbar:SetMinMaxValues(0, 1)
-			healthbar:SetValue(1)
-			healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
-
-			if CRF_Settings['unit_power'] then
-				powerbar:SetStatusBarColor(0.6, 0.6, 0.6)
-				powerbar:SetMinMaxValues(0, 1)
-				powerbar:SetValue(1)
-			end
-		else
+		if UnitIsConnected(member) then
 			healthbar:SetMinMaxValues(0, UnitHealthMax(member))
 			healthbar:SetValue(UnitHealth(member))
 
@@ -205,6 +125,16 @@ function CRF_UpdateMemberFrame(frame)
 			end
 
 			CRF_OnHeal(member, nil)
+		else
+			healthbar:SetMinMaxValues(0, 1)
+			healthbar:SetValue(1)
+			healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
+
+			if CRF_Settings['unit_power'] then
+				powerbar:SetStatusBarColor(0.6, 0.6, 0.6)
+				powerbar:SetMinMaxValues(0, 1)
+				powerbar:SetValue(1)
+			end
 		end
 	end
 end
@@ -296,6 +226,54 @@ function CRF_GetFreeAuraButton(frame, reverse)
 			if not texture:GetTexture() then
 				return button
 			end
+		end
+	end
+end
+
+function CRF_UpdateLookAndFeel()
+	local group = _G['CompactGroupFrame']
+
+	if CRF_Settings['frame_border'] then
+		group:SetBackdrop({
+			edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
+			edgeSize = 16
+		})
+		group:SetBackdropBorderColor(0.5, 0.5, 0.5, 1.0)
+	else
+		group:SetBackdrop(nil)
+	end
+
+	for i = 1, MAX_PARTY_MEMBERS + 1 do
+		local frame = _G['CompactUnitFrame' .. i]
+		local healthbar = _G[frame:GetName() .. 'HealthBar']
+		local powerbar = _G[frame:GetName() .. 'PowerBar']
+
+		local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
+
+		group:SetHeight((GetNumPartyMembers() + 1) * height + 8)
+		group:SetWidth(width + 8)
+
+		frame:SetPoint('TOP', group, 0, -((i - 1) * height + 4))
+		frame:SetHeight(height)
+		frame:SetWidth(width)
+
+		healthbar:SetWidth(width)
+
+		if CRF_Settings['unit_power'] then
+			healthbar:SetHeight(height - 4)
+
+			powerbar:Show()
+			powerbar:SetWidth(width)
+		else
+			healthbar:SetHeight(height)
+
+			powerbar:Hide()
+		end
+
+		if CRF_Settings['unit_colors'] then
+			CRF_UpdateMemberFrame(frame)
+		else
+			healthbar:SetStatusBarColor(0.0, 1.0, 0.0)
 		end
 	end
 end

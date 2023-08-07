@@ -2,7 +2,7 @@
     <Button name="CompactUnitFrameAuraButtonTemplate" frameLevel="4" virtual="true">
         <Size x="16" y="16" />
         <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
-            <Color r="0" g="0" b="0" a="1" />
+            <Color r="0.0" g="0.0" b="0.0" a="1.0" />
         </Backdrop>
         <Layers>
             <Layer level="OVERLAY">
@@ -84,13 +84,13 @@
                 </Scripts>
             </Button>
             <StatusBar name="$parentHealthBar">
-                <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
-                <BarColor r="0" g="1" b="0" />
+                <BarTexture file="Interface\TARGETINGFRAME\UI-StatusBar" />
+                <BarColor r="0.0" g="1.0" b="0.0" />
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent" />
                 </Anchors>
                 <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
-                    <Color r="0.1" g="0.1" b="0.1" a="0.8" />
+                    <Color r="0.2" g="0.2" b="0.2" a="0.8" />
                 </Backdrop>
                 <Scripts>
                     <OnLoad>
@@ -99,8 +99,8 @@
                 </Scripts>
                 <Frames>
                     <StatusBar name="$parentIncomingHealBar" hidden="true">
-                        <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
-                        <BarColor r="0" g="0.6" b="0" />
+                        <BarTexture file="Interface\TARGETINGFRAME\UI-StatusBar" />
+                        <BarColor r="0.0" g="0.6" b="0.0" />
                         <Scripts>
                             <OnLoad>
                                 this:SetFrameLevel(0)
@@ -111,13 +111,11 @@
             </StatusBar>
             <StatusBar name="$parentPowerBar" hidden="true">
                 <Size x="0" y="4" />
-                <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
+                <BarTexture file="Interface\TARGETINGFRAME\UI-StatusBar" />
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="$parent" />
                 </Anchors>
-                <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
-                    <Color r="0.2" g="0.2" b="0.2" a="0.8" />
-                </Backdrop>
+                <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background" />
                 <Scripts>
                     <OnLoad>
                         this:SetFrameLevel(0)
@@ -188,13 +186,14 @@
                         <Anchor point="TOPLEFT" relativeTo="$parent" />
                     </Anchors>
                 </FontString>
-                <Texture name="$parentCombatIndicator" file="Interface\AddOns\CRF\assets\UnitFrame-CombatIndicator">
-                    <Size x="10" y="10" />
+                <Texture name="$parentCombatIndicator" file="Interface\CharacterFrame\UI-StateIcon">
+                    <Size x="16" y="16" />
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset x="3" y="-3" />
+                            <Offset x="2" y="0" />
                         </Anchor>
                     </Anchors>
+                    <TexCoords left="0.5" right="1.0" top="0.0" bottom="0.5" />
                 </Texture>
             </Layer>
         </Layers>
@@ -231,8 +230,8 @@
                         local indicator = getglobal(this:GetName() .. 'CombatIndicator')
                         if UnitAffectingCombat(this.unit) then
                             indicator:Show()
-                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 14, -3)
-                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 14)
+                            getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 16, -3)
+                            getglobal(this:GetName() .. 'NameText'):SetWidth(this:GetWidth() - 16)
                         else
                             indicator:Hide()
                             getglobal(this:GetName() .. 'NameText'):SetPoint('TOPLEFT', this, 3, -3)

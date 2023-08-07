@@ -1,10 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="main.lua" />
-    <Frame name="CompactGroupFrame" parent="UIParent" movable="true" frameStrata="BACKGROUND" hidden="true">
-        <Size x="72" y="0"/>
+    <Frame name="CompactGroupFrame" parent="UIParent" movable="true" hidden="true">
         <Anchors>
             <Anchor point="LEFT" relativeTo="UIParent">
-                <Offset x="25" y="180" />
+                <Offset x="24" y="192" />
             </Anchor>
         </Anchors>
         <Frames>
@@ -36,7 +35,16 @@
                         }
                     end
 
-                    CRF_Init()
+                    for i = 1, MAX_PARTY_MEMBERS + 1 do
+                        local frame = getglobal('PartyMemberFrame' .. i)
+                        if frame then
+                            frame:Hide()
+                            frame:UnregisterAllEvents()
+                            frame.Show = function() return end
+                        end
+                    end
+
+                    CRF_UpdateLookAndFeel()
                 end
 
                 CRF_UpdateFrames()
