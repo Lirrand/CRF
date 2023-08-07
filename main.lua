@@ -62,10 +62,6 @@ function CRF_Init()
 	local group = _G['CompactGroupFrame']
 
 	if group then
-		if not CRF_Settings['frame_border'] then
-			group:SetBackdrop(nil)
-		end
-
 		for i = 1, MAX_PARTY_MEMBERS do
 			local frame = _G['PartyMemberFrame' .. i]
 			frame:Hide()
@@ -77,18 +73,9 @@ function CRF_Init()
 			local frame = _G['CompactUnitFrame' .. i]
 			frame:Hide()
 			frame:SetID(i - 1)
-			frame:SetPoint('TOP', group, 0, -((i - 1) * frame:GetHeight() + 4))
-
-			if CRF_Settings['unit_health'] then
-				local health = _G[frame:GetName() .. 'HealthBarText']
-				frame:Show()
-			end
-
-			if CRF_Settings['unit_power'] then
-				local healthbar = _G[frame:GetName() .. 'HealthBar']
-				healthbar:SetHeight(38)
-			end
 		end
+
+		CRF_UpdateLookAndFeel()
 
 		group.ready = true
 	end
@@ -100,7 +87,8 @@ function CRF_UpdateFrames()
 	if group then
 		if GetNumPartyMembers() > 0 then
 			group:Show()
-			group:SetHeight((GetNumPartyMembers() + 1) * 42 + 8)
+			group:SetHeight((GetNumPartyMembers() + 1) * CRF_Settings['unit_height'] + 8)
+			group:SetWidth(CRF_Settings['unit_width'] + 8)
 		else
 			group:Hide()
 			return
@@ -131,12 +119,59 @@ function CRF_UpdateFrames()
 	end
 end
 
+function CRF_UpdateLookAndFeel()
+	local group = _G['CompactGroupFrame']
+
+	if CRF_Settings['frame_border'] then
+		group:SetBackdrop({
+			edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',
+			edgeSize = 16
+		})
+		group:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+	else
+		group:SetBackdrop(nil)
+	end
+
+	for i = 1, MAX_PARTY_MEMBERS + 1 do
+		local frame = _G['CompactUnitFrame' .. i]
+		local healthbar = _G[frame:GetName() .. 'HealthBar']
+		local powerbar = _G[frame:GetName() .. 'PowerBar']
+
+		local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
+
+		group:SetHeight((GetNumPartyMembers() + 1) * height + 8)
+		group:SetWidth(width + 8)
+
+		frame:SetPoint('TOP', group, 0, -((i - 1) * height + 4))
+		frame:SetHeight(height)
+		frame:SetWidth(width)
+
+		healthbar:SetWidth(width)
+
+		if CRF_Settings['unit_power'] then
+			healthbar:SetHeight(height - 4)
+
+			powerbar:Show()
+			powerbar:SetWidth(width)
+		else
+			healthbar:SetHeight(height)
+
+			powerbar:Hide()
+		end
+
+		if CRF_Settings['unit_colors'] then
+			CRF_UpdateMemberFrame(frame)
+		else
+			healthbar:SetStatusBarColor(0.0, 1.0, 0.0)
+		end
+	end
+end
+
 function CRF_UpdateMemberFrame(frame)
 	if frame and frame.unit then
 		local member = frame.unit
 		local name = _G[frame:GetName() .. 'NameText']
 		local healthbar = _G[frame:GetName() .. 'HealthBar']
-		local health = _G[frame:GetName() .. 'HealthBarText']
 		local powerbar = _G[frame:GetName() .. 'PowerBar']
 
 		name:SetText(UnitName(member))
@@ -146,16 +181,10 @@ function CRF_UpdateMemberFrame(frame)
 			healthbar:SetValue(1)
 			healthbar:SetStatusBarColor(0.5, 0.5, 0.5)
 
-			if CRF_Settings['unit_health'] and health:IsVisible() then
-				health:SetText("Offline")
-				health:Show()
-			end
-
 			if CRF_Settings['unit_power'] then
 				powerbar:SetStatusBarColor(0.6, 0.6, 0.6)
 				powerbar:SetMinMaxValues(0, 1)
 				powerbar:SetValue(1)
-				powerbar:Show()
 			end
 		else
 			healthbar:SetMinMaxValues(0, UnitHealthMax(member))
@@ -167,18 +196,12 @@ function CRF_UpdateMemberFrame(frame)
 				healthbar:SetStatusBarColor(color.r, color.g, color.b)
 			end
 
-			if CRF_Settings['unit_health'] and health:IsVisible() then
-				health:SetText(format('%.0f%%', (UnitHealth(member) / UnitHealthMax(member)) * 100))
-				health:Show()
-			end
-
 			if CRF_Settings['unit_power'] then
 				local color = ManaBarColor[UnitPowerType(member)] or { r = 0.0, g = 0.0, b = 1.0 }
 				powerbar:SetStatusBarColor(color.r, color.g, color.b)
 				powerbar:SetBackdropColor(color.r - 0.6, color.g - 0.6, color.b - 0.6, 0.8)
 				powerbar:SetMinMaxValues(0, UnitManaMax(member))
 				powerbar:SetValue(UnitMana(member))
-				powerbar:Show()
 			end
 
 			CRF_OnHeal(member, nil)
@@ -188,7 +211,7 @@ end
 
 function CRF_UpdateMemberFrameAuras(frame)
 	if frame and frame.unit then
-		for i = 1, 4 do
+		for i = 1, 8 do
 			local button = _G[frame:GetName() .. 'AuraButton' .. i]
 			button:Hide()
 			button.type = nil
@@ -256,8 +279,10 @@ function CRF_UpdateMemberFrameAuras(frame)
 end
 
 function CRF_GetFreeAuraButton(frame, reverse)
+	local max = floor(CRF_Settings['unit_width'] / 16)
+
 	if reverse then
-		for i = 4, 1, -1 do
+		for i = max, 1, -1 do
 			local button = _G[frame:GetName() .. 'AuraButton' .. i]
 			local texture = _G[button:GetName() .. 'Texture']
 			if not texture:GetTexture() or (texture:GetTexture() and button.type == 'buff') then
@@ -265,54 +290,12 @@ function CRF_GetFreeAuraButton(frame, reverse)
 			end
 		end
 	else
-		for i = 1, 4 do
+		for i = 1, max do
 			local button = _G[frame:GetName() .. 'AuraButton' .. i]
 			local texture = _G[button:GetName() .. 'Texture']
 			if not texture:GetTexture() then
 				return button
 			end
 		end
-	end
-end
-
-SLASH_CRF1 = '/crf'
-SlashCmdList['CRF'] = function(msg)
-	local args = {}
-	local i = 1
-	for arg in string.gfind(string.lower(msg), "%S+") do
-		args[i] = arg
-		i = i + 1
-	end
-
-	if not args[1] then
-		DEFAULT_CHAT_FRAME:AddMessage("/crf border - toggle group border visibility")
-		DEFAULT_CHAT_FRAME:AddMessage("/crf class - toggle healthbar color based on class")
-		DEFAULT_CHAT_FRAME:AddMessage("/crf health - toggle health percentage text visibility")
-		DEFAULT_CHAT_FRAME:AddMessage("/crf power - toggle unit powerbar visibility")
-		DEFAULT_CHAT_FRAME:AddMessage("")
-		DEFAULT_CHAT_FRAME:AddMessage("Any changes will be applied after you reload your interface.")
-
-	elseif args[1] == 'border' then
-		CRF_Settings['frame_border'] = not CRF_Settings['frame_border']
-
-		DEFAULT_CHAT_FRAME:AddMessage("Group frame border set to " .. (CRF_Settings['frame_border'] and "visible" or "hidden") .. ".")
-
-	elseif args[1] == 'class' then
-		CRF_Settings['unit_colors'] = not CRF_Settings['unit_colors']
-
-		DEFAULT_CHAT_FRAME:AddMessage("Unit healthbar class colors set to " ..
-		(CRF_Settings['unit_colors'] and "enabled" or "disabled") .. ".")
-
-	elseif args[1] == 'health' then
-		CRF_Settings['unit_health'] = not CRF_Settings['unit_health']
-
-		DEFAULT_CHAT_FRAME:AddMessage("Unit health percentage text set to " ..
-		(CRF_Settings['unit_health'] and "enabled" or "disabled") .. ".")
-
-	elseif args[1] == 'power' then
-		CRF_Settings['unit_power'] = not CRF_Settings['unit_power']
-
-		DEFAULT_CHAT_FRAME:AddMessage(
-		"Unit powerbar set to " .. (CRF_Settings['unit_power'] and "visible" or "hidden") .. ".")
 	end
 end

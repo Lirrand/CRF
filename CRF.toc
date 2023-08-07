@@ -33,4 +33,6 @@ CompactUnitFrame.xml
 CompactGroupFrame.xml
 
 main.lua
+
+options.lua
 compat.lua

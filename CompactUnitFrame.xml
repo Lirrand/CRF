@@ -35,7 +35,6 @@
         </Scripts>
     </Button>
     <Frame name="CompactUnitFrameTemplate" virtual="true">
-        <Size x="64" y="42"/>
         <Frames>
             <Button name="$parentHitbox">
                 <Anchors>
@@ -43,6 +42,9 @@
                     <Anchor point="BOTTOMRIGHT" relativeTo="$parent" />
                 </Anchors>
                 <Scripts>
+                    <OnLoad>
+                        this:RegisterForDrag('LeftButton')
+                    </OnLoad>
                     <OnMouseDown>
                         if arg1 == 'LeftButton' then
                             TargetUnit(this:GetParent().unit)
@@ -61,33 +63,22 @@
                     <OnLeave>
                         GameTooltip:Hide()
                     </OnLeave>
+                    <OnDragStart>
+                        if not UnitAffectingCombat('player') and IsControlKeyDown() then
+                            CompactGroupFrame:StartMoving()
+                        end
+                    </OnDragStart>
+                    <OnDragStop>
+                        CompactGroupFrame:StopMovingOrSizing()
+                    </OnDragStop>
                 </Scripts>
             </Button>
             <StatusBar name="$parentHealthBar">
-                <Size x="64" y="42" />
                 <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
                 <BarColor r="0" g="1" b="0" />
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent" />
                 </Anchors>
-                <Layers>
-                    <Layer level="OVERLAY">
-                        <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" hidden="true">
-                            <Size x="70" y="14" />
-                            <FontHeight val="14" />
-                            <Color r="0.5" g="0.5" b="0.5" a="1" />
-                            <Shadow>
-                                <Offset x="1" y="-1" />
-                                <Color r="0" g="0" b="0" />
-                            </Shadow>
-                            <Anchors>
-                                <Anchor point="CENTER" relativeTo="$parent">
-                                    <Offset x="0" y="-10" />
-                                </Anchor>
-                            </Anchors>
-                        </FontString>
-                    </Layer>
-                </Layers>
                 <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background">
                     <Color r="0.1" g="0.1" b="0.1" a="0.8" />
                 </Backdrop>
@@ -109,7 +100,7 @@
                 </Frames>
             </StatusBar>
             <StatusBar name="$parentPowerBar" hidden="true">
-                <Size x="64" y="4" />
+                <Size x="0" y="4" />
                 <BarTexture file="Interface\AddOns\CRF\assets\UnitFrame-HealthFill" />
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="$parent" />
@@ -145,6 +136,34 @@
             <Button name="$parentAuraButton4" inherits="CompactUnitFrameAuraButtonTemplate">
                 <Anchors>
                     <Anchor point="LEFT" relativeTo="$parentAuraButton3">
+                        <Offset x="16" y="0" />
+                    </Anchor>
+                </Anchors>
+            </Button>
+            <Button name="$parentAuraButton5" inherits="CompactUnitFrameAuraButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentAuraButton4">
+                        <Offset x="16" y="0" />
+                    </Anchor>
+                </Anchors>
+            </Button>
+            <Button name="$parentAuraButton6" inherits="CompactUnitFrameAuraButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentAuraButton5">
+                        <Offset x="16" y="0" />
+                    </Anchor>
+                </Anchors>
+            </Button>
+            <Button name="$parentAuraButton7" inherits="CompactUnitFrameAuraButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentAuraButton6">
+                        <Offset x="16" y="0" />
+                    </Anchor>
+                </Anchors>
+            </Button>
+            <Button name="$parentAuraButton8" inherits="CompactUnitFrameAuraButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeTo="$parentAuraButton7">
                         <Offset x="16" y="0" />
                     </Anchor>
                 </Anchors>
