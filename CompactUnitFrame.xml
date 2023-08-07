@@ -32,6 +32,16 @@
             <OnLeave>
                 GameTooltip:Hide()
             </OnLeave>
+            <OnMouseDown>
+                if arg1 == 'LeftButton' then
+                    TargetUnit(this:GetParent().unit)
+                elseif arg1 == 'RightButton' then
+                    local id = this:GetParent():GetID()
+                    if id > 0 then
+                        ToggleDropDownMenu(1, nil, getglobal('PartyMemberFrame' .. id .. 'DropDown'), this:GetName(), 100, 25)
+                    end
+                end
+            </OnMouseDown>
         </Scripts>
     </Button>
     <Frame name="CompactUnitFrameTemplate" virtual="true">
