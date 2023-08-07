@@ -2,17 +2,22 @@
 
 Compact Raid Frames is a World of Warcraft Vanilla (1.12) backport of raid frames introduced in the Cataclysm expansion.
 
-> The addon is still under development and may include unwanted bugs
+> Only works with a party, raid support will be implemented in the future
 
 ## Overview
 
-- **Only works with a party, raid support will be included in the future**
-- Can be moved and resized
-  - To move, hold down control, move over the group frame and click and drag
-  - To resize, hold down control and alt, move over the group frame and drag (only width can be adjusted)
-- Includes debuff and combat indicators
-  - The combat indicator ![Indicator - combat](screenshots/combat.png) will be shown when a group member is in combat
-  - The debuff indicator will be shown when a group member has a dispellable debuff on them. The icon of the indicator changes based on the debuff type (![Indicator - curse](screenshots/curse.png) Curse, ![Indicator - disease](screenshots/disease.png) Disease, ![Indicator - magic](screenshots/magic.png) Magic and ![Indicator - poison](screenshots/poison.png) Poison)
 - Includes incoming heal prediction
+- Tracks class buffs and dispellable debuffs (4 auras by default)
+- Unitframes fade out when party members are out of range
 - Mouseover macros implemented by other addons are supported
+- Can be moved by holding down the control key and dragging the frame around (only works out of combat)
 - The group frame and unitframes can be further customized using slash commands (`/crf`)
+  - Changing the width of the unitframes also updates the amount of tracked auras. The amount of tracked auras is calculated as `floor(unitframe width / aura size)`
+
+## Warning
+
+If you want to replace your older version of the addon with the newest one, you will need to wipe the config first.
+
+1. Open your World of Warcraft folder
+2. Navigate to `WTF/Account/<your account name>/<realm name>/<character name>/SavedVairables`
+3. Delete the `CRF.lua` and `CRF.lua.bak` files
