@@ -68,6 +68,15 @@ SlashCmdList['CRF'] = function(msg)
 				chat:AddMessage("|cffcececeSpecified width is too small (min. 64px) or too large (max. 128px).")
 			end
       end
+	elseif args[1] == 'reset' then
+		CRF_Settings = {
+			['frame_border'] = true,
+			['unit_power'] = true,
+			['unit_colors'] = true,
+			['unit_width'] = 64,
+			['unit_height'] = 42,
+			['aura_size'] = 16
+	  }
 	else
 		chat:Clear()
 
@@ -78,6 +87,7 @@ SlashCmdList['CRF'] = function(msg)
 		chat:AddMessage("|cff808080/crf |cffffffffclass |cffcecece- toggle class-colored healthbars")
 		chat:AddMessage("|cff808080/crf |cffffffffaura size [number] |cffcecece- set unitframe auras size")
 		chat:AddMessage("|cff808080/crf |cffffffffsize [width] [height] |cffcecece- set unitframe width and height")
+		chat:AddMessage("|cff808080/crf |cffffffffsize reset |cffcecece- reset addon settings")
 		chat:AddMessage("")
 	end
 
