@@ -14,10 +14,11 @@ Compact Raid Frames is a World of Warcraft Vanilla (1.12) backport of raid frame
 - The group frame and unitframes can be further customized using slash commands (`/crf`)
   - Changing the width of the unitframes also updates the amount of tracked auras. The amount of tracked auras is calculated as `floor(unitframe width / aura size)`
 
-## Warning
+## Installation
 
-If you want to replace your older version of the addon with the newest one, you will need to wipe the config first.
+1. Download the addon
+2. Extract the ZIP file
+3. Rename the extracted folder to `CRF` (remove `-master` from the name)
+4. Move the folder to your AddOns folder
 
-1. Open your World of Warcraft folder
-2. Navigate to `WTF/Account/<your account name>/<realm name>/<character name>/SavedVairables`
-3. Delete the `CRF.lua` and `CRF.lua.bak` files
+> If you are updating from an older version and you get errors in-game, try typing `/crf reset` in the chat
