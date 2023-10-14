@@ -190,16 +190,18 @@ function CRF_UpdateMemberFrameAuras(frame)
 			local buff = string.gsub(UnitBuff(frame.unit, index), '/', '\\')
 			local _, class = UnitClass('player')
 
-			for _, classBuff in ipairs(classBuffs[string.lower(class)]) do
-				if buff == classBuff then
-					local texture = _G[button:GetName() .. 'Texture']
+			if classBuffs[string.lower(class)] then
+				for _, classBuff in ipairs(classBuffs[string.lower(class)]) do
+					if buff == classBuff then
+						local texture = _G[button:GetName() .. 'Texture']
 
-					button:Show()
-					button:SetBackdropColor(0.0, 0.0, 0.0, 1.0)
-					button.type = 'buff'
-					button.index = index
+						button:Show()
+						button:SetBackdropColor(0.0, 0.0, 0.0, 1.0)
+						button.type = 'buff'
+						button.index = index
 
-					texture:SetTexture(buff)
+						texture:SetTexture(buff)
+					end
 				end
 			end
 
