@@ -209,4 +209,13 @@
             </OnUpdate>
         </Scripts>
     </Frame>
+    <Frame name="CompactGroupFrameTemplate" virtual="true">
+        <Frames>
+            <Frame name="$parentUnitFrame1" inherits="CompactUnitFrameTemplate" />
+            <Frame name="$parentUnitFrame2" inherits="CompactUnitFrameTemplate" />
+            <Frame name="$parentUnitFrame3" inherits="CompactUnitFrameTemplate" />
+            <Frame name="$parentUnitFrame4" inherits="CompactUnitFrameTemplate" />
+            <Frame name="$parentUnitFrame5" inherits="CompactUnitFrameTemplate" />
+        </Frames>
+    </Frame>
 </Ui>

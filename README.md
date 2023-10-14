@@ -2,7 +2,7 @@
 
 Compact Raid Frames is a World of Warcraft Vanilla (1.12) backport of raid frames introduced in the Cataclysm expansion.
 
-> Only works with a party, raid support will be implemented in the future
+> ~~Only~~ Works with a party. ~~raid support will be implemented in the future~~ Raid support (or a basic version of it) is now available!
 
 ## Overview
 

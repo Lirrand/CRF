@@ -60,38 +60,94 @@ local classBuffs = {
 
 function CRF_UpdateFrames()
 	local group = _G['CompactGroupFrame']
+	local party = _G['CompactPartyFrame']
+	local isInRaid = UnitInRaid("player")
+	local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
+	CRF_UpdateLookAndFeel()
 
 	if group then
-		if GetNumPartyMembers() > 0 then
+		if isInRaid then
+			party:Hide()
 			group:Show()
-			group:SetHeight((GetNumPartyMembers() + 1) * CRF_Settings['unit_height'] + 8)
-			group:SetWidth(CRF_Settings['unit_width'] + 8)
-		else
-			group:Hide()
-			return
-		end
 
-		for i = 1, MAX_PARTY_MEMBERS + 1 do
-			local frame = _G['CompactUnitFrame' .. i]
-			local member = nil
+			local highestSubGroupNumber = 0
+			local highestSubGroupSize = 0
 
-			if i == 1 then
-				member = 'player'
-			else
-				if GetPartyMember(i - 1) then
-					member = 'party' .. i - 1
+			for i = 1, 8 do
+				local raidGroup = _G['CompactRaidFrame'..i]
+		
+				if RAID_SUBGROUP_LISTS and RAID_SUBGROUP_LISTS[i] then
+					local highestFrameNumber = 0
+					for frameNumber, raidNumber in pairs(RAID_SUBGROUP_LISTS[i]) do
+						local frame = _G[raidGroup:GetName() .. 'UnitFrame' .. frameNumber]
+						frame:SetID(raidNumber)
+						frame.unit = 'raid'..raidNumber
+						frame:Show()
+
+						CRF_SetUnitFrameAppearance(frame, frameNumber, raidGroup)
+						CRF_UpdateMemberFrameAuras(frame)
+
+						if highestFrameNumber < frameNumber then
+							highestFrameNumber = frameNumber
+						end
+					end
+					if highestFrameNumber > 0 then
+						raidGroup:SetPoint('TOPLEFT', group, (width + 8) * (i - 1), 0)
+						raidGroup:Show()
+						highestSubGroupNumber = i
+					else
+						raidGroup:Hide()
+					end
+					for j = highestFrameNumber + 1, MAX_PARTY_MEMBERS + 1 do
+						local frame = _G[raidGroup:GetName() .. 'UnitFrame' .. j]
+						frame:Hide()
+					end
+					if highestSubGroupSize < highestFrameNumber then
+						highestSubGroupSize = highestFrameNumber
+					end
 				else
-					frame:Hide()
+					raidGroup:Hide()
 				end
 			end
-
-			if member then
-				frame:Show()
-				frame:SetID(i - 1)
-				frame.unit = member
-
-				CRF_UpdateMemberFrame(frame)
-				CRF_UpdateMemberFrameAuras(frame)
+			group:SetHeight(highestSubGroupSize * height + 8)
+			group:SetWidth((width + 8) * highestSubGroupNumber)
+		else
+			party:Show()
+			for i = 1, 8 do
+				local raidGroup = _G['CompactRaidFrame'..i]
+				raidGroup:Hide()
+			end
+			if GetNumPartyMembers() > 0 then
+				group:Show()
+				group:SetHeight((GetNumPartyMembers() + 1) * CRF_Settings['unit_height'] + 8)
+				group:SetWidth(CRF_Settings['unit_width'] + 8)
+			else
+				group:Hide()
+				return
+			end
+	
+			for i = 1, MAX_PARTY_MEMBERS + 1 do
+				local frame = _G['CompactPartyFrameUnitFrame' .. i]
+				local member = nil
+	
+				if i == 1 then
+					member = 'player'
+				else
+					if GetPartyMember(i - 1) then
+						member = 'party' .. i - 1
+					else
+						frame:Hide()
+					end
+				end
+	
+				if member then
+					frame:Show()
+					frame:SetID(i - 1)
+					frame.unit = member
+	
+					CRF_UpdateMemberFrame(frame)
+					CRF_UpdateMemberFrameAuras(frame)
+				end
 			end
 		end
 	end
@@ -124,7 +180,7 @@ function CRF_UpdateMemberFrame(frame)
 				powerbar:SetValue(UnitMana(member))
 			end
 
-			CRF_OnHeal(member, nil)
+			CRF_OnHeal(member, frame)
 		else
 			healthbar:SetMinMaxValues(0, 1)
 			healthbar:SetValue(1)
@@ -230,8 +286,53 @@ function CRF_GetFreeAuraButton(frame, reverse)
 	end
 end
 
+function CRF_SetUnitFrameAppearance(frame, frameNumber, parentFrame)
+	local healthbar = _G[frame:GetName() .. 'HealthBar']
+	local powerbar = _G[frame:GetName() .. 'PowerBar']
+
+	local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
+
+	frame:SetPoint('TOP', parentFrame, 0, -((frameNumber - 1) * height + 4))
+	frame:SetHeight(height)
+	frame:SetWidth(width)
+
+	healthbar:SetWidth(width)
+
+	if CRF_Settings['unit_power'] then
+		healthbar:SetHeight(height - 4)
+
+		powerbar:Show()
+		powerbar:SetWidth(width)
+	else
+		healthbar:SetHeight(height)
+
+		powerbar:Hide()
+	end
+
+	if CRF_Settings['unit_colors'] then
+		CRF_UpdateMemberFrame(frame)
+	else
+		healthbar:SetStatusBarColor(0.0, 1.0, 0.0)
+	end
+
+	local size = CRF_Settings['aura_size']
+	for i = 1, 8 do
+		local button = _G[frame:GetName() .. 'AuraButton' .. i]
+		button:SetHeight(size)
+		button:SetWidth(size)
+
+		if i ~= 1 then
+			button:SetPoint('LEFT', _G[frame:GetName() .. 'AuraButton' .. i - 1], size, 0)
+		end
+	end
+
+	CRF_UpdateMemberFrameAuras(frame)
+end
+
 function CRF_UpdateLookAndFeel()
 	local group = _G['CompactGroupFrame']
+	local isInRaid = UnitInRaid("player")
+	local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
 
 	if CRF_Settings['frame_border'] then
 		group:SetBackdrop({
@@ -243,50 +344,46 @@ function CRF_UpdateLookAndFeel()
 		group:SetBackdrop(nil)
 	end
 
-	for i = 1, MAX_PARTY_MEMBERS + 1 do
-		local frame = _G['CompactUnitFrame' .. i]
-		local healthbar = _G[frame:GetName() .. 'HealthBar']
-		local powerbar = _G[frame:GetName() .. 'PowerBar']
-
-		local height, width = CRF_Settings['unit_height'], CRF_Settings['unit_width']
-
-		group:SetHeight((GetNumPartyMembers() + 1) * height + 8)
-		group:SetWidth(width + 8)
-
-		frame:SetPoint('TOP', group, 0, -((i - 1) * height + 4))
-		frame:SetHeight(height)
-		frame:SetWidth(width)
-
-		healthbar:SetWidth(width)
-
-		if CRF_Settings['unit_power'] then
-			healthbar:SetHeight(height - 4)
-
-			powerbar:Show()
-			powerbar:SetWidth(width)
-		else
-			healthbar:SetHeight(height)
-
-			powerbar:Hide()
-		end
-
-		if CRF_Settings['unit_colors'] then
-			CRF_UpdateMemberFrame(frame)
-		else
-			healthbar:SetStatusBarColor(0.0, 1.0, 0.0)
-		end
-
-		local size = CRF_Settings['aura_size']
+	if isInRaid then
+		local highestSubGroupNumber = 0
+		local highestSubGroupSize = 0
 		for i = 1, 8 do
-			local button = _G[frame:GetName() .. 'AuraButton' .. i]
-			button:SetHeight(size)
-			button:SetWidth(size)
+			local raidGroup = _G['CompactRaidFrame'..i]
+	
+			if RAID_SUBGROUP_LISTS and RAID_SUBGROUP_LISTS[i] then
+				local highestFrameNumber = 0
+				for frameNumber, raidNumber in pairs(RAID_SUBGROUP_LISTS[i]) do
+					local frame = _G[raidGroup:GetName() .. 'UnitFrame' .. frameNumber]
 
-			if i ~= 1 then
-				button:SetPoint('LEFT', _G[frame:GetName() .. 'AuraButton' .. i - 1], size, 0)
+					CRF_SetUnitFrameAppearance(frame, frameNumber, raidGroup)
+
+					if highestFrameNumber < frameNumber then
+						highestFrameNumber = frameNumber
+					end
+				end
+				if highestFrameNumber > 0 then
+					highestSubGroupNumber = i
+				end
+				if highestSubGroupSize < highestFrameNumber then
+					highestSubGroupSize = highestFrameNumber
+				end
 			end
+
+			raidGroup:SetPoint('TOPLEFT', group, (width + 8) * (i - 1), 0)
+			raidGroup:SetHeight(5 * height + 8)
+			raidGroup:SetWidth(width + 8)
 		end
 
-		CRF_UpdateMemberFrameAuras(frame)
+		group:SetHeight(highestSubGroupSize * height + 8)
+		group:SetWidth((width + 8) * highestSubGroupNumber)
+	else
+		for i = 1, MAX_PARTY_MEMBERS + 1 do
+			local frame = _G['CompactPartyFrameUnitFrame' .. i]
+
+			group:SetHeight((GetNumPartyMembers() + 1) * height + 8)
+			group:SetWidth(width + 8)
+
+			CRF_SetUnitFrameAppearance(frame, i, group)
+		end
 	end
 end

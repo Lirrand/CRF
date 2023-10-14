@@ -7,17 +7,22 @@
             </Anchor>
         </Anchors>
         <Frames>
-            <Frame name="CompactUnitFrame1" inherits="CompactUnitFrameTemplate" />
-            <Frame name="CompactUnitFrame2" inherits="CompactUnitFrameTemplate" />
-            <Frame name="CompactUnitFrame3" inherits="CompactUnitFrameTemplate" />
-            <Frame name="CompactUnitFrame4" inherits="CompactUnitFrameTemplate" />
-            <Frame name="CompactUnitFrame5" inherits="CompactUnitFrameTemplate" />
+            <Frame name="CompactRaidFrame1" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame2" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame3" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame4" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame5" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame6" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame7" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactRaidFrame8" inherits="CompactGroupFrameTemplate" />
+            <Frame name="CompactPartyFrame" inherits="CompactGroupFrameTemplate" />
         </Frames>
         <Scripts>
             <OnLoad>
                 this:RegisterEvent('VARIABLES_LOADED')
                 this:RegisterEvent('PLAYER_ENTERING_WORLD')
                 this:RegisterEvent('PARTY_MEMBERS_CHANGED')
+                this:RegisterEvent('RAID_ROSTER_UPDATE')
 
                 this:SetClampedToScreen()
 
