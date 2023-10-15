@@ -100,6 +100,7 @@ function CRF_UpdateFrames()
 					end
 					for j = highestFrameNumber + 1, MAX_PARTY_MEMBERS + 1 do
 						local frame = _G[raidGroup:GetName() .. 'UnitFrame' .. j]
+						frame.unit = nil
 						frame:Hide()
 					end
 					if highestSubGroupSize < highestFrameNumber then
